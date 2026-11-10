@@ -83,19 +83,13 @@ public final class ServerMessagesFeature extends AbstractFeature {
         return found;
     }
 
-    /** Jugadores con el permiso de Permiso_Ocultar_Mensajes no muestran mensaje de entrada ni de salida. */
-    private static boolean silent(YamlConfiguration c, Player p) {
-        String perm = c.getString("Permiso_Ocultar_Mensajes", "");
-        return perm != null && !perm.isEmpty() && p.hasPermission(perm);
-    }
-
     private final class Events implements Listener {
         @EventHandler(priority = EventPriority.HIGH)
         public void onJoin(PlayerJoinEvent e) {
             Player p = e.getPlayer();
             YamlConfiguration c = cfg();
             boolean async = c.getBoolean("Messages.Async", false);
-            boolean vanished = (c.getBoolean("Ocultar_Mensajes_Vanish", true) && Hooks.vanished(p)) || silent(c, p);
+            boolean vanished = c.getBoolean("Ocultar_Mensajes_Vanish", true) && Hooks.vanished(p);
 
             // ---- primera entrada
             boolean first = !p.hasPlayedBefore();
@@ -227,7 +221,7 @@ public final class ServerMessagesFeature extends AbstractFeature {
         public void onQuit(PlayerQuitEvent e) {
             Player p = e.getPlayer();
             YamlConfiguration c = cfg();
-            boolean vanished = (c.getBoolean("Ocultar_Mensajes_Vanish", true) && Hooks.vanished(p)) || silent(c, p);
+            boolean vanished = c.getBoolean("Ocultar_Mensajes_Vanish", true) && Hooks.vanished(p);
             ConfigurationSection jq = c.getConfigurationSection("Messages.Join_Quit_Messages");
             if (jq == null) {
                 if (vanished) {

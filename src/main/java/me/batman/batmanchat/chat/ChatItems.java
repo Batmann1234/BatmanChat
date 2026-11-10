@@ -38,16 +38,13 @@ final class ChatItems {
         ItemStack item = source.clone();
         String f = Text.vars(fmt, kv);
         int i = f.toLowerCase().indexOf("{item}");
-        Component c;
-        if (i < 0) {
-            c = Text.parse(f);
-        } else {
-            c = Component.text()
-                    .append(Text.parse(f.substring(0, i)))
-                    .append(name(item))
-                    .append(Text.parse(f.substring(i + 6)))
-                    .build();
-        }
+        String before = i < 0 ? "" : f.substring(0, i);
+        String after = i < 0 ? "" : f.substring(i + 6);
+        Component c = Component.text()
+                .append(Text.parse(before))
+                .append(name(item))
+                .append(Text.parse(after))
+                .build();
         return c.hoverEvent(item.asHoverEvent());
     }
 }

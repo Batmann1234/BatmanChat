@@ -4,7 +4,7 @@ main: me.batman.batmanchat.BatmanChat
 api-version: '1.21'
 authors: [Batman]
 description: Chat, anuncios, mensajes y proteccion de chat en un solo plugin (reemplaza ChatManager, ChatSentry e InfiniteAnnouncements).
-softdepend: [PlaceholderAPI, Vault, LuckPerms, Essentials, EssentialsX]
+softdepend: [PlaceholderAPI, Vault, LuckPerms, Essentials, EssentialsX, AxVaults]
 
 commands:
   batmanchat:
@@ -104,6 +104,8 @@ permissions:
   batmanchat.items.dinero:
     default: true
   batmanchat.items.ping:
+    default: true
+  batmanchat.items.pv:
     default: true
   batmanchat.items.ver:
     default: true

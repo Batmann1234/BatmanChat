@@ -2,14 +2,14 @@
 #                    BatmanChat - chat/mutechat.yml (/mutechat)
 #=================================================================================================#
 #
-#  /mutechat (alias /togglechat, /silenciarchat)   Permiso: batmanchat.mutechat   (o chatmanager.mutechat)
+#  /mutechat (alias /togglechat, /silenciarchat)   Permiso: batmanchat.mutechat   (o chatmanager.mutechat / chatsentry.togglechat)
 #  Bypass (pueden hablar con el chat silenciado): batmanchat.mutechat.bypass  (o chatmanager.bypass.mutechat)
 #  Variables: {player}
 #
 #=================================================================================================#
 
 # Bloquear tambien ciertos comandos mientras el chat esta silenciado.
-Disable_Commands: false
+Disable_Commands: true
 # Comandos bloqueados (solo si Disable_Commands es true).
 Disabled_Commands:
   - "/message"
@@ -22,9 +22,10 @@ Disabled_Commands:
   - "/me"
   - "/reply"
   - "/r"
+  - "/pm"
 
 Mensajes:
-  Denied_Message: '{Prefix} &cNo puedes hablar en el chat en este momento.'
-  Enabled: '{Prefix} &aEl chat ha sido activado por {player}.'
-  Disabled: '{Prefix} &cEl chat ha sido silenciado por {player}.'
+  Denied_Message: '&fNo se pudo enviar el mensaje: el chat esta desactivado actualmente.'
+  Enabled: '{Prefix} &fEl chat ha sido &aactivado&f por {player}&f.'
+  Disabled: '{Prefix} &fEl chat ha sido &7desactivado&f por {player}&f.'
   Blocked_Command: '{Prefix} &cNo puedes usar ese comando mientras el chat esta silenciado.'

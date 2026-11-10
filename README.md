@@ -56,7 +56,7 @@ Los permisos viejos de ChatManager/ChatSentry **tambien funcionan** (`chatmanage
 - Chat: `batmanchat.clearchat`, `.clearchat.bypass`, `.mutechat`, `.mutechat.bypass`, `.staffchat`, `.delay.bypass`
 - Colores del mensaje: `batmanchat.color.all`, `.color.<codigo>`, `.color.hex`, `.color.gradient`, `.format.all`, `.format.<codigo>`
 - Emojis/menciones: `batmanchat.emojis`, `batmanchat.menciones`, `batmanchat.menciones.todos`
-- Tokens: `batmanchat.items.mano|inv|ender|dinero|ping|ver` (todos), `batmanchat.items.cooldown.bypass`
+- Tokens: `batmanchat.items.mano|inv|ender|dinero|ping|pv|ver` (todos), `batmanchat.items.cooldown.bypass`
 - Encuestas: `batmanchat.encuesta.votar` (todos), `batmanchat.encuesta.crear`
 - Tienda: `batmanchat.tienda.admin`
 - Protecciones: `batmanchat.proteccion.bypass` (todas), `batmanchat.proteccion.<modulo>.bypass`, `.warn`, `.warnings`, `.lockdown`, `.lookup`, `.notify`, `.commandspy`, `.commandspy.toggle`, `.commandspy.exempt`, `.warn.exempt`, `.autopunisher.exempt`
@@ -72,4 +72,4 @@ Los OP se saltan las protecciones, salvo los modulos que marques en `override-by
 - Tu config de ChatManager tenia `Formatted_Messages.enable: false`, por eso `Colores_En_Mensajes` esta en `false`.
 
 ## No incluido (no lo pediste)
-Mensajes privados (`/msg`, los maneja Essentials), social spy, lista de staff/jugadores, reglas, chat por mundo/radio, comandos baneados, logs de chat.
+Opciones de ChatSentry `context-prediction` y `max-recursion-depth` (no se portaron; los filtros funcionan sin ellas), comprobar actualizaciones, mensajes por red/multiservidor. Mensajes privados (`/msg`, los maneja Essentials), social spy, lista de staff/jugadores, reglas, chat por mundo/radio, comandos baneados, logs de chat.

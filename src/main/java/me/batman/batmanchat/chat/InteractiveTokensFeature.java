@@ -21,6 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -50,6 +51,8 @@ public final class InteractiveTokensFeature extends AbstractFeature {
 
     private final Map<String, View> views = new ConcurrentHashMap<>();
     private final Map<UUID, Long> lastUse = new ConcurrentHashMap<>();
+    private final Set<UUID> capturing = ConcurrentHashMap.newKeySet();
+    private final Set<String> numberTokens = new HashSet<>();
     private Pattern pattern;
     private final Map<String, String> aliasToToken = new HashMap<>();
 
@@ -92,6 +95,7 @@ public final class InteractiveTokensFeature extends AbstractFeature {
 
     private void buildPattern() {
         aliasToToken.clear();
+        numberTokens.clear();
         List<String> aliases = new ArrayList<>();
         ConfigurationSection tokens = cfg().getConfigurationSection("Tokens");
         if (tokens != null) {
@@ -99,6 +103,9 @@ public final class InteractiveTokensFeature extends AbstractFeature {
                 List<String> list = tokens.getStringList(token + ".Alias");
                 if (list.isEmpty()) {
                     list = List.of(token);
+                }
+                if (tokens.getBoolean(token + ".Acepta_Numero", false)) {
+                    numberTokens.add(token.toLowerCase(Locale.ROOT));
                 }
                 for (String a : list) {
                     String k = a.toLowerCase(Locale.ROOT).trim();
@@ -122,7 +129,7 @@ public final class InteractiveTokensFeature extends AbstractFeature {
             alt.append(Pattern.quote(a));
         }
         String prefix = Pattern.quote(cfg().getString("Prefijo", "!"));
-        pattern = Pattern.compile("(?<![\\p{L}\\p{N}_])" + prefix + "(" + alt + ")(?![\\p{L}\\p{N}_])",
+        pattern = Pattern.compile("(?<![\\p{L}\\p{N}_])" + prefix + "(" + alt + ")(?:[ ]?(\\d{1,3}))?(?![\\p{L}\\p{N}_])",
                 Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     }
 
@@ -142,11 +149,11 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         final ItemStack[] armor;
         final ItemStack offhand;
         final ItemStack[] ender;
-        final ItemStack hand;
         final long created = System.currentTimeMillis();
+        ItemStack[] pv;
+        int number;
 
-        View(String owner, String kind, ItemStack[] storage, ItemStack[] armor, ItemStack offhand, ItemStack[] ender, ItemStack hand) {
-            this.hand = hand;
+        View(String owner, String kind, ItemStack[] storage, ItemStack[] armor, ItemStack offhand, ItemStack[] ender) {
             this.owner = owner;
             this.kind = kind;
             this.storage = storage;
@@ -172,6 +179,56 @@ public final class InteractiveTokensFeature extends AbstractFeature {
             out[i] = in[i] == null ? null : in[i].clone();
         }
         return out;
+    }
+
+    /**
+     * Lee el vault de AxVaults del jugador SIN depender de su API: ejecuta el comando de abrir vault como el
+     * jugador, copia el contenido en cuanto se abre y lo cierra. Se llama desde el hilo asincrono del chat
+     * (espera unos instantes). Mientras tanto se bloquean los clics del jugador para que no pueda tocar nada.
+     */
+    private ItemStack[] capture(Player p, int number, ConfigurationSection t, YamlConfiguration y) {
+        if (Bukkit.isPrimaryThread() || t == null) {
+            return null;
+        }
+        String cmd = Text.vars(t.getString("Comando", "pv {numero}"), "numero", String.valueOf(number), "player", p.getName());
+        long max = Math.max(500, t.getLong("Espera_Maxima_Ms", 2500));
+        try {
+            Boolean started = Bukkit.getScheduler().callSyncMethod(plugin, () -> {
+                InventoryType type = p.getOpenInventory().getTopInventory().getType();
+                if (type != InventoryType.CRAFTING && type != InventoryType.CREATIVE) {
+                    return false;
+                }
+                capturing.add(p.getUniqueId());
+                p.performCommand(cmd.startsWith("/") ? cmd.substring(1) : cmd);
+                return true;
+            }).get(2, TimeUnit.SECONDS);
+            if (!Boolean.TRUE.equals(started)) {
+                Text.send(p, y.getString("Mensajes.Cierra_Inventario", ""));
+                return null;
+            }
+            long end = System.currentTimeMillis() + max;
+            while (System.currentTimeMillis() < end) {
+                ItemStack[] got = Bukkit.getScheduler().callSyncMethod(plugin, () -> {
+                    Inventory top = p.getOpenInventory().getTopInventory();
+                    if (top.getType() == InventoryType.CRAFTING || top.getType() == InventoryType.CREATIVE) {
+                        return null;
+                    }
+                    ItemStack[] copy = cloneAll(top.getContents());
+                    p.closeInventory();
+                    return copy;
+                }).get(2, TimeUnit.SECONDS);
+                if (got != null) {
+                    return got;
+                }
+                Thread.sleep(50);
+            }
+            Text.send(p, y.getString("Mensajes.Vault_No_Disponible", ""), "numero", String.valueOf(number));
+            return null;
+        } catch (Exception ex) {
+            return null;
+        } finally {
+            capturing.remove(p.getUniqueId());
+        }
     }
 
     /** Debe ejecutarse en el hilo principal. */
@@ -203,11 +260,14 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         final int start;
         final int end;
         final String token;
+        final Integer num;
+        ItemStack[] data;
 
-        Found(int start, int end, String token) {
+        Found(int start, int end, String token, Integer num) {
             this.start = start;
             this.end = end;
             this.token = token;
+            this.num = num;
         }
     }
 
@@ -229,7 +289,19 @@ public final class InteractiveTokensFeature extends AbstractFeature {
             if (token == null || !Hooks.has(p, "batmanchat.items." + token)) {
                 continue;
             }
-            found.add(new Found(m.start(), m.end(), token));
+            Integer num = null;
+            int end = m.end();
+            if (m.group(2) != null) {
+                if (numberTokens.contains(token)) {
+                    num = Integer.parseInt(m.group(2));
+                } else {
+                    end = m.end(1);
+                }
+            }
+            if (numberTokens.contains(token) && num == null) {
+                continue;
+            }
+            found.add(new Found(m.start(), end, token, num));
         }
         if (found.isEmpty()) {
             return null;
@@ -261,6 +333,13 @@ public final class InteractiveTokensFeature extends AbstractFeature {
             return null;
         }
 
+        for (Found f : found) {
+            if (f.token.equals("pv")) {
+                f.data = capture(p, f.num == null ? 1 : f.num, y.getConfigurationSection("Tokens.pv"), y);
+                break;
+            }
+        }
+
         Component out = Component.empty();
         int cursor = 0;
         boolean any = false;
@@ -268,7 +347,7 @@ public final class InteractiveTokensFeature extends AbstractFeature {
             if (f.start > cursor) {
                 out = out.append(plain.apply(text.substring(cursor, f.start)));
             }
-            Component c = build(f.token, p, snap, y);
+            Component c = build(f.token, p, snap, y, f);
             if (c == null) {
                 out = out.append(plain.apply(text.substring(f.start, f.end)));
             } else {
@@ -299,7 +378,7 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         return hover;
     }
 
-    private Component build(String token, Player p, Snap s, YamlConfiguration y) {
+    private Component build(String token, Player p, Snap s, YamlConfiguration y, Found f) {
         ConfigurationSection t = y.getConfigurationSection("Tokens." + token);
         if (t == null) {
             return null;
@@ -312,15 +391,26 @@ public final class InteractiveTokensFeature extends AbstractFeature {
                     Text.send(p, y.getString("Mensajes.Mano_Vacia", ""));
                     return null;
                 }
-                String id = store(new View(name, "mano", null, null, null, null, s.hand.clone()));
-                return ChatItems.formatted(fmt, s.hand, "player", name)
-                        .clickEvent(ClickEvent.runCommand("/batmanchat ver " + id));
+                return ChatItems.formatted(fmt, s.hand, "player", name);
             }
             case "inv":
             case "ender": {
-                String id = store(new View(name, token, s.storage, s.armor, s.offhand, s.ender, null));
+                String id = store(new View(name, token, s.storage, s.armor, s.offhand, s.ender));
                 Component c = Text.parse(Text.vars(fmt, "player", name));
                 Component hover = hoverLines(p, t, "player", name);
+                return c.hoverEvent(HoverEvent.showText(hover)).clickEvent(ClickEvent.runCommand("/batmanchat ver " + id));
+            }
+            case "pv": {
+                if (f.data == null) {
+                    return null;
+                }
+                View v = new View(name, "pv", null, null, null, null);
+                v.pv = f.data;
+                v.number = f.num == null ? 1 : f.num;
+                String id = store(v);
+                String num = String.valueOf(v.number);
+                Component c = Text.parse(Text.vars(fmt, "player", name, "numero", num));
+                Component hover = hoverLines(p, t, "player", name, "numero", num);
                 return c.hoverEvent(HoverEvent.showText(hover)).clickEvent(ClickEvent.runCommand("/batmanchat ver " + id));
             }
             case "dinero": {
@@ -380,17 +470,15 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         YamlConfiguration y = cfg();
         ViewHolder h = new ViewHolder();
         Inventory inv;
-        if (v.kind.equals("mano")) {
-            String title = y.getString("Tokens.mano.Titulo_Menu", "&fItem de {player}");
-            inv = Bukkit.createInventory(h, 27, Text.parse(Text.vars(title, "player", v.owner)));
-            ItemStack pane = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-            ItemMeta pm = pane.getItemMeta();
-            pm.displayName(Component.text(" "));
-            pane.setItemMeta(pm);
-            for (int i = 0; i < 27; i++) {
-                inv.setItem(i, pane.clone());
+        if (v.kind.equals("pv")) {
+            String title = y.getString("Tokens.pv.Titulo_Menu", "&8Vault {numero} de {player}");
+            int size = Math.max(9, Math.min(54, ((v.pv.length + 8) / 9) * 9));
+            inv = Bukkit.createInventory(h, size, Text.parse(Text.vars(title, "player", v.owner, "numero", String.valueOf(v.number))));
+            for (int i = 0; i < size && i < v.pv.length; i++) {
+                if (v.pv[i] != null) {
+                    inv.setItem(i, v.pv[i].clone());
+                }
             }
-            inv.setItem(13, v.hand.clone());
         } else if (v.kind.equals("ender")) {
             String title = y.getString("Tokens.ender.Titulo_Menu", "&8Ender Chest de {player}");
             inv = Bukkit.createInventory(h, 27, Text.parse(Text.vars(title, "player", v.owner)));
@@ -462,7 +550,7 @@ public final class InteractiveTokensFeature extends AbstractFeature {
 
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onClick(InventoryClickEvent e) {
-            if (ours(e.getView())) {
+            if (ours(e.getView()) || capturing.contains(e.getWhoClicked().getUniqueId())) {
                 e.setCancelled(true);
             }
         }
@@ -479,7 +567,7 @@ public final class InteractiveTokensFeature extends AbstractFeature {
 
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onDrag(InventoryDragEvent e) {
-            if (ours(e.getView())) {
+            if (ours(e.getView()) || capturing.contains(e.getWhoClicked().getUniqueId())) {
                 e.setCancelled(true);
             }
         }

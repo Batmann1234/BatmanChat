@@ -225,7 +225,7 @@ public final class ChatControlFeature extends AbstractFeature {
     private final class MuteCmd implements CommandExecutor {
         @Override
         public boolean onCommand(CommandSender s, Command c, String label, String[] args) {
-            if (!Hooks.has(s, "batmanchat.mutechat", "chatmanager.mutechat")) {
+            if (!Hooks.has(s, "batmanchat.mutechat", "chatmanager.mutechat", "chatsentry.togglechat")) {
                 Text.sendKey(s, "Message.No_Permission");
                 return true;
             }

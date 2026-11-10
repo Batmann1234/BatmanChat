@@ -2,6 +2,8 @@
 #              BatmanChat - chat/items-interactivos.yml (!mano, !inv, !ender, !dinero, !ping)
 #=================================================================================================#
 #
+#  Tambien !pv <numero> (ej: !pv 3) muestra uno de tus vaults de AxVaults en modo solo lectura.
+#
 #  Al escribir !mano en el chat se muestra el item que llevas en la mano (con hover del item),
 #  !inv tu inventario (click para verlo), !ender tu cofre de ender, !dinero tu dinero y !ping tu ping.
 #  Es parecido a InteractiveChat pero integrado, no necesita ningun otro plugin.
@@ -10,7 +12,7 @@
 #  El inventario/ender se abre en un menu de solo lectura donde no se puede sacar, mover ni
 #  arrastrar nada, y la foto caduca pasado un tiempo.
 #
-#  Permisos (por defecto todos los jugadores): batmanchat.items.mano, .inv, .ender, .dinero, .ping
+#  Permisos (por defecto todos los jugadores): batmanchat.items.mano, .inv, .ender, .dinero, .ping, .pv
 #  Quitar el cooldown: batmanchat.items.cooldown.bypass
 #  El dinero necesita Vault + un plugin de economia (Essentials, etc).
 #
@@ -73,6 +75,21 @@ Tokens:
     Formato: "&8[&6{dinero}&8]"
     Hover:
       - "&7Dinero de &f{player}"
+  pv:
+    Alias: [pv, vault, baul]
+    # Se escribe con numero: !pv 3  o  !pv3
+    Acepta_Numero: true
+    # Comando que abre TU vault numero {numero} en AxVaults. Cambialo si en tu servidor es otro (ej: "vault {numero}").
+    # BatmanChat lo ejecuta como el jugador, copia el contenido en cuanto se abre y lo cierra al instante,
+    # asi que el jugador necesita permiso para ese vault (el de AxVaults) y no se toca la API interna de AxVaults.
+    Comando: "pv {numero}"
+    # Milisegundos maximos que espera a que AxVaults abra el vault.
+    Espera_Maxima_Ms: 2500
+    Formato: "&8[&b{player} &7- &bVault {numero}&8]"
+    Hover:
+      - "&7Vault &f{numero} &7de &f{player}"
+      - "&eClic para verlo"
+    Titulo_Menu: "&8Vault {numero} de {player}"
   ping:
     Alias: [ping]
     Formato: "&8[&a{ping}ms&8]"
@@ -83,5 +100,7 @@ Mensajes:
   Cooldown: "{Prefix} &cEspera &e{segundos}s &cantes de volver a mostrar algo en el chat."
   Mano_Vacia: "{Prefix} &cNo tienes ningun item en la mano."
   Sin_Economia: "{Prefix} &cEl dinero no esta disponible ahora mismo."
+  Cierra_Inventario: "{Prefix} &cCierra el inventario que tienes abierto para mostrar tu vault."
+  Vault_No_Disponible: "{Prefix} &cNo se pudo abrir tu vault {numero} (no existe o no tienes permiso)."
   Caducado: "{Prefix} &cEsa vista ya caduco."
   Solo_Jugadores: "{Prefix} &cSolo los jugadores pueden abrir esto."
