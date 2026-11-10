@@ -6,6 +6,7 @@ import me.batman.batmanchat.util.Display;
 import me.batman.batmanchat.util.Text;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.damage.DamageSource;
@@ -26,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 /** Mensajes de muerte personalizados por causa, con el arma en hover. Config: chat/muertes.yml. */
@@ -114,15 +116,51 @@ public final class DeathMessagesFeature extends AbstractFeature {
                 key = cause;
             }
 
-            List<String> options = new ArrayList<>(y.getStringList("Mensajes." + key));
-            if (options.isEmpty() && (key.equals("JUGADOR_SIN_ARMA"))) {
-                options = new ArrayList<>(y.getStringList("Mensajes.JUGADOR"));
+            // ---- claves a probar, de la mas especifica a la mas general
+            String typeKey = damageTypeKey(e);
+            List<String> keys = new ArrayList<>();
+            if (bomber != null) {
+                keys.add(key);
+                if (!key.equals("EXPLOSION_AUTO")) {
+                    keys.add("EXPLOSION_JUGADOR");
+                }
+            } else if (killer instanceof Player) {
+                if (weapon != null) {
+                    switch (typeKey) {
+                        case "MACE_SMASH" -> keys.add("JUGADOR_MAZA");
+                        case "ARROW" -> keys.add("JUGADOR_FLECHA");
+                        case "TRIDENT" -> keys.add("JUGADOR_TRIDENTE");
+                        default -> { }
+                    }
+                }
+                keys.add(key);
+                if (key.equals("JUGADOR_SIN_ARMA")) {
+                    keys.add("JUGADOR");
+                }
+            } else if (killer != null) {
+                keys.add("MOB_" + killer.getType().name());
+                keys.add("MOB");
+            } else {
+                if (cause.equals("FALL")) {
+                    String fk = fallKey(victim);
+                    if (fk != null) {
+                        keys.add(fk);
+                    }
+                }
+                if (!typeKey.isEmpty()) {
+                    keys.add(typeKey);
+                }
+                keys.add(cause);
             }
-            if (options.isEmpty() && key.startsWith("EXPLOSION_") && !key.equals("EXPLOSION_AUTO")) {
-                options = new ArrayList<>(y.getStringList("Mensajes.EXPLOSION_JUGADOR"));
-            }
-            if (options.isEmpty()) {
-                options = new ArrayList<>(y.getStringList("Mensajes.DEFAULT"));
+            keys.add("DEFAULT");
+
+            List<String> options = new ArrayList<>();
+            for (String k : keys) {
+                List<String> found = y.getStringList("Mensajes." + k);
+                if (!found.isEmpty()) {
+                    options.addAll(found);
+                    break;
+                }
             }
             if (options.isEmpty()) {
                 return;
@@ -154,6 +192,30 @@ public final class DeathMessagesFeature extends AbstractFeature {
                         (float) y.getDouble("Sonido.pitch", 1.0));
             }
         }
+    }
+
+    /** Id del tipo de dano de Minecraft en mayusculas (ej: FALLING_ANVIL, CACTUS, STALAGMITE), o "" si no se puede leer. */
+    private static String damageTypeKey(PlayerDeathEvent e) {
+        try {
+            return e.getDamageSource().getDamageType().getKey().getKey().toUpperCase(Locale.ROOT);
+        } catch (Throwable t) { // API distinta a la esperada: se usa solo la DamageCause
+            return "";
+        }
+    }
+
+    /** Variante de caida segun el bloque donde esta la victima (escalera, enredaderas, andamio), o null. */
+    private static String fallKey(Player p) {
+        Material m = p.getLocation().getBlock().getType();
+        if (m == Material.LADDER) {
+            return "FALL_LADDER";
+        }
+        if (m == Material.SCAFFOLDING) {
+            return "FALL_SCAFFOLDING";
+        }
+        if (m.name().contains("VINE")) {
+            return "FALL_VINES";
+        }
+        return null;
     }
 
     private static String entityName(Entity e) {
