@@ -8,7 +8,11 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.minecart.ExplosiveMinecart;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -70,7 +74,30 @@ public final class DeathMessagesFeature extends AbstractFeature {
                 killer = le;
             }
 
-            if (killer instanceof Player kp) {
+            // ---- explosiones provocadas por un jugador (cristales del End, TNT...)
+            String explosive = "";
+            Player bomber = null;
+            if (cause.equals("ENTITY_EXPLOSION") || cause.equals("BLOCK_EXPLOSION")) {
+                DamageSource ds = e.getDamageSource();
+                Entity direct = ds.getDirectEntity();
+                Entity causing = ds.getCausingEntity();
+                if (causing instanceof Player cp) {
+                    bomber = cp;
+                } else if (direct instanceof TNTPrimed tnt && tnt.getSource() instanceof Player sp) {
+                    bomber = sp;
+                }
+                if (bomber != null) {
+                    String kind = direct instanceof EnderCrystal ? "CRISTAL"
+                            : (direct instanceof TNTPrimed || direct instanceof ExplosiveMinecart) ? "TNT" : "JUGADOR";
+                    explosive = y.getString("Explosivos." + kind, "");
+                    key = bomber.getUniqueId().equals(victim.getUniqueId()) ? "EXPLOSION_AUTO" : "EXPLOSION_" + kind;
+                    killerName = bomber.getName();
+                }
+            }
+
+            if (bomber != null) {
+                // key ya definido arriba
+            } else if (killer instanceof Player kp) {
                 killerName = kp.getName();
                 ItemStack hand = kp.getInventory().getItemInMainHand();
                 if (ChatItems.isEmpty(hand)) {
@@ -91,6 +118,9 @@ public final class DeathMessagesFeature extends AbstractFeature {
             if (options.isEmpty() && (key.equals("JUGADOR_SIN_ARMA"))) {
                 options = new ArrayList<>(y.getStringList("Mensajes.JUGADOR"));
             }
+            if (options.isEmpty() && key.startsWith("EXPLOSION_") && !key.equals("EXPLOSION_AUTO")) {
+                options = new ArrayList<>(y.getStringList("Mensajes.EXPLOSION_JUGADOR"));
+            }
             if (options.isEmpty()) {
                 options = new ArrayList<>(y.getStringList("Mensajes.DEFAULT"));
             }
@@ -101,6 +131,7 @@ public final class DeathMessagesFeature extends AbstractFeature {
             String raw = Text.vars(line,
                     "victima", victim.getName(),
                     "asesino", killerName,
+                    "explosivo", explosive,
                     "mundo", victim.getWorld().getName(),
                     "x", String.valueOf(victim.getLocation().getBlockX()),
                     "y", String.valueOf(victim.getLocation().getBlockY()),

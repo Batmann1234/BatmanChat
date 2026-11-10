@@ -14,6 +14,12 @@
 #    JUGADOR       lo mato otro jugador (con arma en la mano)
 #    JUGADOR_SIN_ARMA   lo mato otro jugador con las manos vacias
 #    MOB           lo mato un mob (incluye mobs de MythicMobs), {asesino} es su nombre
+#    EXPLOSION_CRISTAL  lo exploto otro jugador con un cristal del End (ej: "X ha sido explotado por Y")
+#    EXPLOSION_TNT      lo exploto otro jugador con TNT
+#    EXPLOSION_JUGADOR  explosion provocada por otro jugador de cualquier otro tipo (tambien es el respaldo
+#                       de las dos anteriores si las dejas vacias)
+#    EXPLOSION_AUTO     se exploto a si mismo
+#  Variable extra para las explosiones: {explosivo} (el nombre que pongas en Explosivos).
 #  Causas normales (nombres de DamageCause de Bukkit): FALL, FIRE, FIRE_TICK, LAVA, DROWNING, SUFFOCATION,
 #    VOID, STARVATION, POISON, WITHER, MAGIC, LIGHTNING, BLOCK_EXPLOSION, ENTITY_EXPLOSION, PROJECTILE,
 #    CONTACT, FALLING_BLOCK, FLY_INTO_WALL, FREEZE, HOT_FLOOR, THORNS, DRAGON_BREATH, CRAMMING, SONIC_BOOM,
@@ -35,7 +41,25 @@ Sonido:
   volume: 0.4
   pitch: 1.5
 
+# Nombre de {explosivo} segun el tipo de explosion.
+Explosivos:
+  CRISTAL: "un cristal del End"
+  TNT: "TNT"
+  JUGADOR: "una explosion"
+
 Mensajes:
+  EXPLOSION_CRISTAL:
+    - "&8[&c☠&8] &c{victima} &7ha sido explotado por &a{asesino}"
+    - "&8[&c☠&8] &c{victima} &7fue volado por los aires por &a{asesino} &7con {explosivo}"
+    - "&8[&c☠&8] &a{asesino} &7hizo explotar a &c{victima} &7con {explosivo}"
+  EXPLOSION_TNT:
+    - "&8[&c☠&8] &c{victima} &7ha sido explotado por &a{asesino}"
+    - "&8[&c☠&8] &a{asesino} &7volo a &c{victima} &7con TNT"
+  EXPLOSION_JUGADOR:
+    - "&8[&c☠&8] &c{victima} &7ha sido explotado por &a{asesino}"
+  EXPLOSION_AUTO:
+    - "&8[&c☠&8] &c{victima} &7se exploto a si mismo"
+    - "&8[&c☠&8] &c{victima} &7no supo manejar su explosivo"
   JUGADOR:
     - "&8[&c☠&8] &c{victima} &7fue asesinado por &a{asesino} &7usando {arma}"
     - "&8[&c☠&8] &a{asesino} &7elimino a &c{victima} &7con {arma}"
