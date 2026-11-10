@@ -19,10 +19,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -38,19 +42,28 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Tokens interactivos en el chat: !mano, !inv, !ender, !dinero, !ping (estilo InteractiveChat, sin dependencias).
- * Config: chat/items-interactivos.yml. Anti-dupe: se muestran copias, los menus son de solo lectura y caducan.
+ * Config: chat/items-interactivos.yml.
+ *
+ * Anti-dupe / anti-exploit de paquetes retrasados:
+ *  - Todo lo que se muestra es una copia LIMPIA (ChatItems.clean): solo nombre, lore, encantamientos y atributos.
+ *  - La foto de inventario/ender/vault se toma en un unico tick (y el jugador queda bloqueado mientras se lee el vault).
+ *  - Los menus son de solo lectura (clic, arrastre, creativo, mover, tirar, F) y se vacian al cerrarse.
+ *  - Un jugador solo puede tener UNA captura de vault a la vez (antes dos mensajes seguidos quitaban el bloqueo).
+ *  - El menu solo se abre si no hay otro inventario abierto (sin cierres cruzados con ventanas de otros plugins).
  */
 public final class InteractiveTokensFeature extends AbstractFeature {
     private static final String FILE = "chat/items-interactivos.yml";
 
     private final Map<String, View> views = new ConcurrentHashMap<>();
     private final Map<UUID, Long> lastUse = new ConcurrentHashMap<>();
+    private final Map<UUID, Long> lastOpen = new ConcurrentHashMap<>();
     private final Set<UUID> capturing = ConcurrentHashMap.newKeySet();
     private final Set<String> numberTokens = new HashSet<>();
     private Pattern pattern;
@@ -75,6 +88,8 @@ public final class InteractiveTokensFeature extends AbstractFeature {
     public void enable() {
         views.clear();
         lastUse.clear();
+        lastOpen.clear();
+        capturing.clear();
         buildPattern();
         listen(new GuiEvents());
         plugin.registerSub("ver", new ViewSub());
@@ -91,6 +106,8 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         }
         views.clear();
         lastUse.clear();
+        lastOpen.clear();
+        capturing.clear();
     }
 
     private void buildPattern() {
@@ -138,6 +155,7 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         long now = System.currentTimeMillis();
         views.values().removeIf(v -> now - v.created > ttl);
         lastUse.entrySet().removeIf(e -> now - e.getValue() > 3_600_000L);
+        lastOpen.entrySet().removeIf(e -> now - e.getValue() > 60_000L);
     }
 
     // ------------------------------------------------------------------ datos
@@ -173,18 +191,11 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         int ping;
     }
 
-    private static ItemStack[] cloneAll(ItemStack[] in) {
-        ItemStack[] out = new ItemStack[in.length];
-        for (int i = 0; i < in.length; i++) {
-            out[i] = in[i] == null ? null : in[i].clone();
-        }
-        return out;
-    }
-
     /**
      * Lee el vault de AxVaults del jugador SIN depender de su API: ejecuta el comando de abrir vault como el
-     * jugador, copia el contenido en cuanto se abre y lo cierra. Se llama desde el hilo asincrono del chat
-     * (espera unos instantes). Mientras tanto se bloquean los clics del jugador para que no pueda tocar nada.
+     * jugador, copia el contenido (limpio) en cuanto se abre y lo cierra. Se llama desde el hilo asincrono del
+     * chat. El llamador DEBE tener ya el bloqueo "capturing" del jugador (lo libera el llamador en el hilo
+     * principal): mientras dure se cancelan sus clics, arrastres, creativo, tirar item y cambio de mano.
      */
     private ItemStack[] capture(Player p, int number, ConfigurationSection t, YamlConfiguration y) {
         if (Bukkit.isPrimaryThread() || t == null) {
@@ -192,13 +203,20 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         }
         String cmd = Text.vars(t.getString("Comando", "pv {numero}"), "numero", String.valueOf(number), "player", p.getName());
         long max = Math.max(500, t.getLong("Espera_Maxima_Ms", 2500));
+        AtomicBoolean abort = new AtomicBoolean(false);
+        AtomicBoolean opened = new AtomicBoolean(false);
+        AtomicBoolean bad = new AtomicBoolean(false);
+        boolean success = false;
         try {
             Boolean started = Bukkit.getScheduler().callSyncMethod(plugin, () -> {
+                if (abort.get() || !p.isOnline()) {
+                    return false;
+                }
                 InventoryType type = p.getOpenInventory().getTopInventory().getType();
                 if (type != InventoryType.CRAFTING && type != InventoryType.CREATIVE) {
                     return false;
                 }
-                capturing.add(p.getUniqueId());
+                opened.set(true);
                 p.performCommand(cmd.startsWith("/") ? cmd.substring(1) : cmd);
                 return true;
             }).get(2, TimeUnit.SECONDS);
@@ -210,40 +228,83 @@ public final class InteractiveTokensFeature extends AbstractFeature {
             while (System.currentTimeMillis() < end) {
                 ItemStack[] got = Bukkit.getScheduler().callSyncMethod(plugin, () -> {
                     Inventory top = p.getOpenInventory().getTopInventory();
-                    if (top.getType() == InventoryType.CRAFTING || top.getType() == InventoryType.CREATIVE) {
+                    InventoryType tt = top.getType();
+                    if (tt == InventoryType.CRAFTING || tt == InventoryType.CREATIVE) {
                         return null;
                     }
-                    ItemStack[] copy = cloneAll(top.getContents());
+                    if (tt != InventoryType.CHEST || top.getHolder() instanceof ViewHolder) {
+                        // no es un vault (otro menu): no se copia nada y se cierra
+                        bad.set(true);
+                        p.closeInventory();
+                        return null;
+                    }
+                    ItemStack[] copy = ChatItems.cleanAll(top.getContents());
                     p.closeInventory();
                     return copy;
                 }).get(2, TimeUnit.SECONDS);
                 if (got != null) {
+                    success = true;
                     return got;
+                }
+                if (bad.get()) {
+                    break;
                 }
                 Thread.sleep(50);
             }
             Text.send(p, y.getString("Mensajes.Vault_No_Disponible", ""), "numero", String.valueOf(number));
             return null;
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            return null;
         } catch (Exception ex) {
             return null;
         } finally {
-            capturing.remove(p.getUniqueId());
+            if (!success) {
+                // timeout / error: que la tarea pendiente ya no abra nada y cerrar lo que hubiera quedado abierto
+                abort.set(true);
+                if (opened.get()) {
+                    runMain(() -> {
+                        Inventory top = p.getOpenInventory().getTopInventory();
+                        InventoryType tt = top.getType();
+                        if (tt != InventoryType.CRAFTING && tt != InventoryType.CREATIVE && !(top.getHolder() instanceof ViewHolder)) {
+                            p.closeInventory();
+                        }
+                    });
+                }
+            }
         }
     }
 
-    /** Debe ejecutarse en el hilo principal. */
+    /** Ejecuta en el hilo principal sin bloquear (si el plugin ya se apago, lo ejecuta directamente). */
+    private void runMain(Runnable r) {
+        try {
+            if (Bukkit.isPrimaryThread()) {
+                r.run();
+            } else {
+                Bukkit.getScheduler().runTask(plugin, r);
+            }
+        } catch (RuntimeException ex) {
+            try {
+                r.run();
+            } catch (RuntimeException ignored) {
+                // nada mas que hacer
+            }
+        }
+    }
+
+    /** Debe ejecutarse en el hilo principal. Todas las copias salen ya LIMPIAS. */
     private Snap take(Player p, Set<String> need) {
         Snap s = new Snap();
         if (need.contains("mano")) {
-            s.hand = p.getInventory().getItemInMainHand().clone();
+            s.hand = ChatItems.clean(p.getInventory().getItemInMainHand());
         }
         if (need.contains("inv")) {
-            s.storage = cloneAll(p.getInventory().getStorageContents());
-            s.armor = cloneAll(p.getInventory().getArmorContents());
-            s.offhand = p.getInventory().getItemInOffHand().clone();
+            s.storage = ChatItems.cleanAll(p.getInventory().getStorageContents());
+            s.armor = ChatItems.cleanAll(p.getInventory().getArmorContents());
+            s.offhand = ChatItems.clean(p.getInventory().getItemInOffHand());
         }
         if (need.contains("ender")) {
-            s.ender = cloneAll(p.getEnderChest().getContents());
+            s.ender = ChatItems.cleanAll(p.getEnderChest().getContents());
         }
         if (need.contains("dinero")) {
             s.money = Hooks.money(p);
@@ -307,36 +368,91 @@ public final class InteractiveTokensFeature extends AbstractFeature {
             return null;
         }
 
+        UUID id = p.getUniqueId();
         long now = System.currentTimeMillis();
+
+        // cooldown: se reserva de forma atomica (dos mensajes a la vez ya no se saltan el cooldown)
+        boolean reserved = false;
+        Long previous = null;
         if (!p.hasPermission("batmanchat.items.cooldown.bypass")) {
             double cd = Ranks.min(p, y.getConfigurationSection("Cooldown"), 10);
-            Long last = lastUse.get(p.getUniqueId());
-            if (cd > 0 && last != null && now - last < cd * 1000) {
-                long left = (long) Math.ceil((cd * 1000 - (now - last)) / 1000.0);
-                Text.send(p, y.getString("Mensajes.Cooldown", ""), "segundos", String.valueOf(left));
-                return null;
+            if (cd > 0) {
+                final long[] left = {0};
+                final Long[] prev = {null};
+                lastUse.compute(id, (k, last) -> {
+                    prev[0] = last;
+                    if (last != null && now - last < cd * 1000) {
+                        left[0] = (long) Math.ceil((cd * 1000 - (now - last)) / 1000.0);
+                        return last;
+                    }
+                    return now;
+                });
+                if (left[0] > 0) {
+                    Text.send(p, y.getString("Mensajes.Cooldown", ""), "segundos", String.valueOf(left[0]));
+                    return null;
+                }
+                reserved = true;
+                previous = prev[0];
             }
         }
 
+        Component out = null;
+        try {
+            out = render(p, text, plain, y, found, now);
+            return out;
+        } finally {
+            if (out == null && reserved) {
+                // no se mostro nada: se devuelve el cooldown como estaba
+                if (previous == null) {
+                    lastUse.remove(id);
+                } else {
+                    lastUse.put(id, previous);
+                }
+            }
+        }
+    }
+
+    private Component render(Player p, String text, Function<String, Component> plain, YamlConfiguration y,
+                             List<Found> found, long now) {
+        UUID id = p.getUniqueId();
         Set<String> need = new HashSet<>();
+        Found pvFound = null;
         for (Found f : found) {
             need.add(f.token);
+            if (pvFound == null && f.token.equals("pv")) {
+                pvFound = f;
+            }
+        }
+
+        // Un unico bloqueo por jugador mientras se lee el vault y se toma la foto (anti doble captura).
+        boolean locked = false;
+        if (pvFound != null) {
+            if (!capturing.add(id)) {
+                Text.send(p, y.getString("Mensajes.Ocupado", ""));
+                return null;
+            }
+            locked = true;
         }
         Snap snap;
         try {
-            if (Bukkit.isPrimaryThread()) {
-                snap = take(p, need);
-            } else {
-                snap = Bukkit.getScheduler().callSyncMethod(plugin, () -> take(p, need)).get(2, TimeUnit.SECONDS);
+            if (pvFound != null) {
+                pvFound.data = capture(p, pvFound.num == null ? 1 : pvFound.num, y.getConfigurationSection("Tokens.pv"), y);
             }
-        } catch (Exception ex) {
-            return null;
-        }
-
-        for (Found f : found) {
-            if (f.token.equals("pv")) {
-                f.data = capture(p, f.num == null ? 1 : f.num, y.getConfigurationSection("Tokens.pv"), y);
-                break;
+            // La foto del inventario/ender se toma DESPUES del vault y todavia con el jugador bloqueado:
+            // asi inv, ender y vault son del mismo instante y no se puede mover un item entre ellos.
+            try {
+                if (Bukkit.isPrimaryThread()) {
+                    snap = take(p, need);
+                } else {
+                    snap = Bukkit.getScheduler().callSyncMethod(plugin, () -> take(p, need)).get(2, TimeUnit.SECONDS);
+                }
+            } catch (Exception ex) {
+                return null;
+            }
+        } finally {
+            if (locked) {
+                // se libera en el hilo principal, DESPUES de cualquier cierre pendiente de inventario
+                runMain(() -> capturing.remove(id));
             }
         }
 
@@ -362,7 +478,7 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         if (!any) {
             return null;
         }
-        lastUse.put(p.getUniqueId(), now);
+        lastUse.put(id, now);
         return out;
     }
 
@@ -436,7 +552,7 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         }
     }
 
-    private String store(View v) {
+    private synchronized String store(View v) {
         int max = Math.max(10, cfg().getInt("Max_Fotos", 300));
         if (views.size() >= max) {
             String oldest = null;
@@ -470,6 +586,11 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         }
     }
 
+    /** Copia limpia (idempotente) para poner en el menu; null si esta vacio. */
+    private static ItemStack shown(ItemStack it) {
+        return ChatItems.clean(it);
+    }
+
     private void open(Player p, View v) {
         YamlConfiguration y = cfg();
         ViewHolder h = new ViewHolder();
@@ -477,25 +598,21 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         if (v.kind.equals("mano")) {
             String title = y.getString("Tokens.mano.Titulo_Menu", "&fItem de {player}");
             inv = Bukkit.createInventory(h, 27, Text.parse(Text.vars(title, "player", v.owner)));
-            if (v.pv.length > 0 && v.pv[0] != null) {
-                inv.setItem(13, v.pv[0].clone());
+            if (v.pv.length > 0) {
+                inv.setItem(13, shown(v.pv[0]));
             }
         } else if (v.kind.equals("pv")) {
             String title = y.getString("Tokens.pv.Titulo_Menu", "&8Vault {numero} de {player}");
             int size = Math.max(9, Math.min(54, ((v.pv.length + 8) / 9) * 9));
             inv = Bukkit.createInventory(h, size, Text.parse(Text.vars(title, "player", v.owner, "numero", String.valueOf(v.number))));
             for (int i = 0; i < size && i < v.pv.length; i++) {
-                if (v.pv[i] != null) {
-                    inv.setItem(i, v.pv[i].clone());
-                }
+                inv.setItem(i, shown(v.pv[i]));
             }
         } else if (v.kind.equals("ender")) {
             String title = y.getString("Tokens.ender.Titulo_Menu", "&8Ender Chest de {player}");
             inv = Bukkit.createInventory(h, 27, Text.parse(Text.vars(title, "player", v.owner)));
             for (int i = 0; i < 27 && i < v.ender.length; i++) {
-                if (v.ender[i] != null) {
-                    inv.setItem(i, v.ender[i].clone());
-                }
+                inv.setItem(i, shown(v.ender[i]));
             }
         } else {
             String title = y.getString("Tokens.inv.Titulo_Menu", "&8Inventario de {player}");
@@ -510,19 +627,18 @@ public final class InteractiveTokensFeature extends AbstractFeature {
             // filas 0-2: inventario (slots 9-35), fila 3: hotbar (slots 0-8)
             for (int i = 0; i < 36 && i < v.storage.length; i++) {
                 int slot = i < 9 ? 27 + i : i - 9;
-                if (v.storage[i] != null) {
-                    inv.setItem(slot, v.storage[i].clone());
-                }
+                inv.setItem(slot, shown(v.storage[i]));
             }
             // armadura: casco, peto, pantalones, botas (getArmorContents va de botas a casco)
             for (int i = 0; i < 4 && i < v.armor.length; i++) {
-                ItemStack a = v.armor[3 - i];
+                ItemStack a = shown(v.armor[3 - i]);
                 if (a != null) {
-                    inv.setItem(45 + i, a.clone());
+                    inv.setItem(45 + i, a);
                 }
             }
-            if (v.offhand != null && !v.offhand.getType().isAir()) {
-                inv.setItem(50, v.offhand.clone());
+            ItemStack off = shown(v.offhand);
+            if (off != null) {
+                inv.setItem(50, off);
             }
         }
         h.inv = inv;
@@ -548,6 +664,24 @@ public final class InteractiveTokensFeature extends AbstractFeature {
                 Text.send(p, y.getString("Mensajes.Caducado", ""));
                 return true;
             }
+            UUID id = p.getUniqueId();
+            long now = System.currentTimeMillis();
+            // anti-spam de paquetes: ignora aperturas repetidas casi a la vez
+            Long last = lastOpen.put(id, now);
+            if (last != null && now - last < 250) {
+                return true;
+            }
+            if (capturing.contains(id)) {
+                Text.send(p, y.getString("Mensajes.Ocupado", ""));
+                return true;
+            }
+            // solo se abre sin otro inventario abierto: evita cierres cruzados con ventanas de otros plugins
+            Inventory top = p.getOpenInventory().getTopInventory();
+            InventoryType type = top.getType();
+            if (type != InventoryType.CRAFTING && type != InventoryType.CREATIVE && !(top.getHolder() instanceof ViewHolder)) {
+                Text.send(p, y.getString("Mensajes.Cierra_Para_Ver", ""));
+                return true;
+            }
             open(p, v);
             return true;
         }
@@ -558,17 +692,25 @@ public final class InteractiveTokensFeature extends AbstractFeature {
             return view.getTopInventory().getHolder() instanceof ViewHolder;
         }
 
+        /** Jugador con un menu nuestro abierto o en plena captura de vault. */
+        private boolean locked(org.bukkit.entity.HumanEntity who) {
+            return capturing.contains(who.getUniqueId())
+                    || who.getOpenInventory().getTopInventory().getHolder() instanceof ViewHolder;
+        }
+
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onClick(InventoryClickEvent e) {
             if (ours(e.getView()) || capturing.contains(e.getWhoClicked().getUniqueId())) {
                 e.setCancelled(true);
+                e.setResult(org.bukkit.event.Event.Result.DENY);
             }
         }
 
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onCreative(InventoryCreativeEvent e) {
-            if (ours(e.getView())) {
+            if (ours(e.getView()) || capturing.contains(e.getWhoClicked().getUniqueId())) {
                 e.setCancelled(true);
+                e.setResult(org.bukkit.event.Event.Result.DENY);
                 if (e.getWhoClicked() instanceof Player p) {
                     Bukkit.getScheduler().runTask(plugin, p::updateInventory);
                 }
@@ -579,12 +721,45 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         public void onDrag(InventoryDragEvent e) {
             if (ours(e.getView()) || capturing.contains(e.getWhoClicked().getUniqueId())) {
                 e.setCancelled(true);
+                e.setResult(org.bukkit.event.Event.Result.DENY);
+            }
+        }
+
+        @EventHandler(priority = EventPriority.HIGHEST)
+        public void onMove(InventoryMoveItemEvent e) {
+            if (e.getSource().getHolder() instanceof ViewHolder || e.getDestination().getHolder() instanceof ViewHolder) {
+                e.setCancelled(true);
+            }
+        }
+
+        @EventHandler(priority = EventPriority.HIGHEST)
+        public void onDrop(PlayerDropItemEvent e) {
+            if (locked(e.getPlayer())) {
+                e.setCancelled(true);
+            }
+        }
+
+        @EventHandler(priority = EventPriority.HIGHEST)
+        public void onSwap(PlayerSwapHandItemsEvent e) {
+            if (locked(e.getPlayer())) {
+                e.setCancelled(true);
+            }
+        }
+
+        /** Al cerrar el menu se vacia: cualquier paquete retrasado encuentra los huecos vacios. */
+        @EventHandler(priority = EventPriority.MONITOR)
+        public void onClose(InventoryCloseEvent e) {
+            if (e.getInventory().getHolder() instanceof ViewHolder) {
+                e.getInventory().clear();
             }
         }
 
         @EventHandler
         public void onQuit(PlayerQuitEvent e) {
-            lastUse.remove(e.getPlayer().getUniqueId());
+            UUID id = e.getPlayer().getUniqueId();
+            lastUse.remove(id);
+            lastOpen.remove(id);
+            capturing.remove(id);
         }
     }
 }

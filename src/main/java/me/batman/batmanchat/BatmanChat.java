@@ -4,6 +4,7 @@ import me.batman.batmanchat.chat.ChatFormatFeature;
 import me.batman.batmanchat.chat.DeathMessagesFeature;
 import me.batman.batmanchat.chat.InteractiveTokensFeature;
 import me.batman.batmanchat.chat.PollFeature;
+import me.batman.batmanchat.chat.PrivateMessagesFeature;
 import me.batman.batmanchat.chat.StoreFeature;
 import me.batman.batmanchat.protection.ProtectionFeature;
 import me.batman.batmanchat.server.AnnouncementsFeature;
@@ -59,6 +60,7 @@ public final class BatmanChat extends JavaPlugin {
         features.put("broadcast", new BroadcastFeature(this));
         features.put("control-chat", new ChatControlFeature(this));
         features.put("items-interactivos", new InteractiveTokensFeature(this));
+        features.put("mensajes-privados", new PrivateMessagesFeature(this));
         features.put("formato-chat", new ChatFormatFeature(this));
         features.put("mensajes-muerte", new DeathMessagesFeature(this));
         features.put("tienda", new StoreFeature(this));

@@ -9,7 +9,9 @@
 #  NUEVO: !pv <numero> (ej: !pv 3 o !pv3) -> pv: muestra uno de tus vaults de AxVaults en solo lectura.
 #
 #  ANTI-DUPE: lo que se muestra es una COPIA del momento en que escribiste el mensaje. El
-#  inventario/ender se abre en un menu de solo lectura y la copia caduca (Expiracion_Segundos).
+#  inventario/ender/vault se abre en un menu de solo lectura y la copia caduca (Expiracion_Segundos).
+#  Los items del menu y del hover son copias LIMPIAS: solo material, cantidad, nombre, lore,
+#  encantamientos y atributos (sin NBT/PersistentData extra, ni contenido de shulkers, ni marcas nuevas).
 #
 #  Permisos (por defecto todos): batmanchat.items.mano, .inv, .ender, .dinero, .ping, .pv
 #  Quitar el cooldown: batmanchat.items.cooldown.bypass
@@ -86,5 +88,7 @@ Mensajes:
   Sin_Economia: "{Prefix} &cEl dinero no esta disponible ahora mismo."
   Cierra_Inventario: "{Prefix} &cCierra el inventario que tienes abierto para mostrar tu vault."
   Vault_No_Disponible: "{Prefix} &cNo se pudo abrir tu vault {numero} (no existe o no tienes permiso)."
+  Ocupado: "{Prefix} &cEspera, tu vault todavia se esta procesando."
+  Cierra_Para_Ver: "{Prefix} &cCierra el inventario que tienes abierto para ver esto."
   Caducado: "&aLa sesion ha expirado"
   Solo_Jugadores: "{Prefix} &cSolo los jugadores pueden abrir esto."

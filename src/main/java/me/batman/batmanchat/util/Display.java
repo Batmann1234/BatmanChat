@@ -25,6 +25,21 @@ public final class Display {
     private static Map<String, String> soundKeys;
 
     /** name: "ENTITY_EXPERIENCE_ORB_PICKUP" o "entity.experience_orb.pickup". Vacio/none = no hace nada. */
+    /**
+     * Envia el mensaje a TODOS los jugadores conectados y a la consola. Se usa en vez de Bukkit.broadcast(Component),
+     * que solo llega a quienes estan suscritos al permiso "bukkit.broadcast.user" (con algunos plugins de permisos
+     * eso deja a todos sin recibirlo, y los mensajes de entrada/salida no se veian).
+     */
+    public static void broadcast(Component message) {
+        if (message == null) {
+            return;
+        }
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            p.sendMessage(message);
+        }
+        Bukkit.getConsoleSender().sendMessage(message);
+    }
+
     public static void sound(Player p, String name, float volume, float pitch) {
         if (p == null || name == null || name.isBlank() || name.equalsIgnoreCase("none") || name.equalsIgnoreCase("null")) {
             return;

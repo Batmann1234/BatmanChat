@@ -59,7 +59,43 @@ commands:
     aliases: [poll]
     usage: /<command> <crear|votar|resultados|cerrar>
 
+  msg:
+    description: Enviar un mensaje privado.
+    aliases: [m, w, tell, whisper, pm, mp, privado]
+    usage: /<command> <jugador> <mensaje>
+  r:
+    description: Responder al ultimo mensaje privado.
+    aliases: [reply, respuesta, responder]
+    usage: /<command> <mensaje>
+  ignore:
+    description: Ignorar (o dejar de ignorar) a un jugador.
+    aliases: [ignorar]
+    usage: /<command> <jugador|list>
+  unignore:
+    description: Dejar de ignorar a un jugador.
+    aliases: [designorar]
+    usage: /<command> <jugador>
+  ignoreall:
+    description: Ignorar a todos los jugadores (chat y mensajes privados).
+    aliases: [ignorartodos, ignoretodos]
+    usage: /<command>
+
 permissions:
+  batmanchat.msg:
+    description: Usar /msg y /r.
+    default: true
+  batmanchat.msg.spy:
+    description: Ver los mensajes privados de los demas (/batmanchat spy).
+    default: op
+  batmanchat.ignore:
+    description: Usar /ignore y /unignore.
+    default: true
+  batmanchat.ignoreall:
+    description: Usar /ignoreall.
+    default: true
+  batmanchat.ignore.exempt:
+    description: No se le puede ignorar (se salta /ignore y /ignoreall). Para el staff.
+    default: false
   batmanchat.admin:
     description: Recargar el plugin (/batmanchat reload).
     default: op

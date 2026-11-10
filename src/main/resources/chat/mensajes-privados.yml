@@ -1,0 +1,91 @@
+#=================================================================================================#
+#              BatmanChat - chat/mensajes-privados.yml (/msg, /r, /ignore, /ignoreall)
+#=================================================================================================#
+#
+#  /msg <jugador> <mensaje>   (alias m, w, tell, whisper, pm, mp, privado)     Permiso: batmanchat.msg (todos)
+#  /r <mensaje>               (alias reply, respuesta)                          responde al ultimo con quien hablaste
+#  /ignore <jugador>          activa/desactiva el ignore a ese jugador          Permiso: batmanchat.ignore (todos)
+#  /ignore list               lista a quienes ignoras
+#  /unignore <jugador>        deja de ignorar
+#  /ignoreall                 activa/desactiva el ignore a TODOS                Permiso: batmanchat.ignoreall (todos)
+#  /batmanchat spy            ver los mensajes privados de los demas            Permiso: batmanchat.msg.spy
+#
+#  IGNORE: si ignoras a alguien NO ves lo que escribe en el chat ni sus mensajes privados (y el no puede
+#  escribirte por /msg). Con /ignoreall no ves el chat de nadie ni mensajes privados de nadie.
+#  Los jugadores con el permiso batmanchat.ignore.exempt (dalo al staff por LuckPerms) NO se pueden ignorar.
+#  Los ignores se guardan en chat/ignorados.yml.
+#
+#  PROTECCIONES: los /msg y /r pasan por los mismos modulos de proteccion que el chat publico (filtro de palabras,
+#  links, spam, cooldown, flood, mayusculas, anti-parrot, ejecutor de chat...): los que tengan "chat: true" en
+#  proteccion/config.yml. Se usan los mismos permisos de bypass. En /kcs lookup y avisos salen como "Mensaje privado".
+#  (Solo si Reemplazar_Comandos_Existentes es true; si no, aplican los modulos con "command: true".)
+#
+#  TOKENS: dentro de /msg y /r funcionan los de chat/items-interactivos.yml (!i, !inv, !ender, !pv 3,
+#  !ping, !dinero ...). El emisor y el receptor ven [Objeto de X], [Inventario de X], etc. con hover y clic
+#  (el clic abre el menu de solo lectura). Se respetan los mismos permisos y cooldown que en el chat publico.
+#
+#  Variables de los formatos: {player} (quien escribe), {target} (quien recibe), {message}, y PlaceholderAPI
+#  (se resuelve con los datos de quien escribe).
+#
+#=================================================================================================#
+
+Enable: true
+
+# Interceptar tambien el /msg, /r, /ignore... de Essentials (y /minecraft:msg, /essentials:msg) para que
+# siempre use este modulo. Si lo pones en false, manda el que tenga prioridad en tu servidor.
+Reemplazar_Comandos_Existentes: true
+
+# Nombres que se aceptan para cada comando cuando se intercepta (sin /). Anade los que uses.
+Comandos:
+  Msg: [msg, m, w, tell, whisper, pm, mp, t, dm, mensaje, message, privado]
+  Responder: [r, reply, respuesta, responder]
+  Ignorar: [ignore, ignorar]
+  Designorar: [unignore, designorar]
+  IgnorarTodos: [ignoreall, ignorartodos, ignoretodos]
+
+Formato:
+  Enviado: "&8[&7Yo &8» &f{target}&8] &7{message}"
+  Recibido: "&8[&f{player} &8» &7Yo&8] &7{message}"
+  Spy: "&8[&cSPY&8] &7{player} &8» &7{target}&8: &7{message}"
+
+# Clic en el mensaje recibido = escribe "/msg <jugador> " en tu chat.
+Responder_Con_Clic: true
+Hover_Responder: "&eClic para responder a &f{player}"
+
+Sonido:
+  toggle: true
+  value: 'ENTITY_EXPERIENCE_ORB_PICKUP'
+  volume: 1.0
+  pitch: 1.5
+
+# Mostrar en la consola los mensajes privados (como hacia Essentials).
+Log_Consola: true
+
+# Cuando alguien te ignora y le escribes por /msg, avisarte (si es false el mensaje se pierde sin avisar).
+Avisar_Si_Te_Ignoran: true
+
+Nombre_Consola: "Consola"
+
+Mensajes:
+  Uso_Msg: "{Prefix} &7Uso: &f/msg <jugador> <mensaje>"
+  Uso_Reply: "{Prefix} &7Uso: &f/r <mensaje>"
+  Uso_Ignore: "{Prefix} &7Uso: &f/ignore <jugador> &7o &f/ignore list"
+  Uso_Unignore: "{Prefix} &7Uso: &f/unignore <jugador>"
+  A_Ti_Mismo: "{Prefix} &cNo puedes enviarte mensajes a ti mismo."
+  Nadie_Que_Responder: "{Prefix} &cNo tienes a nadie a quien responder."
+  Desconectado: "{Prefix} &cEse jugador no esta conectado."
+  Lo_Ignoras: "{Prefix} &cTienes ignorado a &f{target}&c. Usa &f/unignore {target} &cpara escribirle."
+  Te_Ignora: "{Prefix} &c{target} no esta recibiendo tus mensajes."
+  Tienes_Ignoreall: "{Prefix} &cTienes &f/ignoreall &cactivado. Desactivalo para enviar mensajes privados."
+  Ignore_Activado: "{Prefix} &aAhora ignoras a &f{target}&a. No veras sus mensajes."
+  Ignore_Quitado: "{Prefix} &aYa no ignoras a &f{target}&a."
+  No_Ignorado: "{Prefix} &cNo estabas ignorando a &f{target}&c."
+  Ignorarte_A_Ti: "{Prefix} &cNo puedes ignorarte a ti mismo."
+  No_Se_Puede_Ignorar: "{Prefix} &cNo puedes ignorar a &f{target}&c."
+  Ignoreall_Activado: "{Prefix} &aAhora ignoras a &ftodos&a: no veras el chat ni mensajes privados."
+  Ignoreall_Desactivado: "{Prefix} &aYa no ignoras a todos."
+  Lista_Titulo: "{Prefix} &7Jugadores que ignoras:"
+  Lista_Linea: "&8» &f{target}"
+  Lista_Vacia: "{Prefix} &7No ignoras a nadie."
+  Spy_Activado: "{Prefix} &aVes los mensajes privados de los demas."
+  Spy_Desactivado: "{Prefix} &cYa no ves los mensajes privados de los demas."

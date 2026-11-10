@@ -119,7 +119,7 @@ public final class StoreFeature extends AbstractFeature {
             String[] kv = {"player", player, "paquete", pkgName, "precio", price, "transaccion", transaction};
 
             for (String line : pkg.getStringList("Anuncio")) {
-                Bukkit.broadcast(Text.parse(Text.vars(line, kv)));
+                Display.broadcast(Text.parse(Text.vars(line, kv)));
             }
             if (pkg.getBoolean("Titulo.Enable", false)) {
                 Component h = Text.parse(Text.vars(pkg.getString("Titulo.Header", ""), kv));

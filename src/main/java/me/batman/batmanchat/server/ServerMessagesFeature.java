@@ -94,7 +94,7 @@ public final class ServerMessagesFeature extends AbstractFeature {
                         final ConfigurationSection snd = fj.getConfigurationSection("Welcome_Message.sound");
                         if (!vanished) {
                             Runnable r = () -> {
-                                Bukkit.broadcast(comp(p, msg));
+                                Display.broadcast(comp(p, msg));
                                 playSound(snd);
                             };
                             if (async) {
@@ -176,7 +176,7 @@ public final class ServerMessagesFeature extends AbstractFeature {
             final String text = msg;
             final ConfigurationSection sound = snd;
             Runnable r = () -> {
-                Bukkit.broadcast(comp(p, text));
+                Display.broadcast(comp(p, text));
                 playSound(sound);
             };
             if (async) {
@@ -216,7 +216,7 @@ public final class ServerMessagesFeature extends AbstractFeature {
             if (vanished || msg == null || msg.isEmpty()) {
                 return;
             }
-            Bukkit.broadcast(comp(p, msg));
+            Display.broadcast(comp(p, msg));
             playSound(snd);
         }
     }

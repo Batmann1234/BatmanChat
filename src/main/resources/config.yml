@@ -36,6 +36,9 @@ modulos:
   # !mano, !inv, !ender, !dinero y !ping en el chat (con hover y sin dupes).
   items-interactivos: true
 
+  # /msg, /r, /ignore, /unignore, /ignoreall (con !i, !inv, !ender, !pv, !ping... dentro de los mensajes privados).
+  mensajes-privados: true
+
   # Mensajes de muerte personalizados por causa (con el item del arma en hover).
   mensajes-muerte: true
 

@@ -108,6 +108,7 @@ lang:
   contexts:
 
     chat: "Chat"
+    private: "Mensaje privado"
     command: "Comando"
     anvil: "Yunque"
     book: "Libro"

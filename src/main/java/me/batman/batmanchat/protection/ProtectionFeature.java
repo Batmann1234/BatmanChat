@@ -2,7 +2,9 @@ package me.batman.batmanchat.protection;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import me.batman.batmanchat.AbstractFeature;
+import me.batman.batmanchat.util.Display;
 import me.batman.batmanchat.BatmanChat;
+import me.batman.batmanchat.chat.PrivateMessagesFeature;
 import me.batman.batmanchat.logic.core.Check;
 import me.batman.batmanchat.logic.core.Context;
 import me.batman.batmanchat.logic.core.Flag;
@@ -189,6 +191,31 @@ public final class ProtectionFeature extends AbstractFeature {
     }
 
     private Check run(Player p, Context ctx, String text) {
+        return run(p, ctx, text, ctx.key);
+    }
+
+    /**
+     * Revisa un mensaje privado (/msg, /r) con los mismos modulos que el chat (los que tengan "chat: true" en
+     * proteccion/config.yml) y con los mismos permisos de bypass. Devuelve null si las protecciones no estan activas.
+     * Si el resultado trae blocked=true no hay que enviar el mensaje; si trae modified=true hay que usar text.
+     * Los avisos al jugador y las advertencias ya se enviaron aqui. Hilo principal.
+     */
+    public Check filterPrivate(Player p, String text) {
+        if (service == null || text == null) {
+            return null;
+        }
+        String t = text;
+        if (cfg.getBoolean("truncate-unsafe-chat", true) && t.length() > 256) {
+            t = t.substring(0, 256);
+        }
+        Check c = run(p, Context.CHAT, t, "private");
+        if (!c.modified && !t.equals(text)) {
+            c.setText(t);
+        }
+        return c;
+    }
+
+    private Check run(Player p, Context ctx, String text, String reportKey) {
         Check c = new Check(p.getUniqueId(), p.getName(), ctx, text, System.currentTimeMillis());
         Set<String> names = new HashSet<>();
         for (Player o : Bukkit.getOnlinePlayers()) {
@@ -210,7 +237,7 @@ public final class ProtectionFeature extends AbstractFeature {
             Lang.send(p, r.langPath, kv(r.vars));
         }
         for (Flag f : c.flags) {
-            service.report(p, f.moduleId, ctx.key, f.typeKey, f.blockedContent, c.original, f.warn, f.notify, f.log);
+            service.report(p, f.moduleId, reportKey, f.typeKey, f.blockedContent, c.original, f.warn, f.notify, f.log);
         }
         if (!c.actions.isEmpty()) {
             final List<String> actions = new ArrayList<>(c.actions);
@@ -249,7 +276,7 @@ public final class ProtectionFeature extends AbstractFeature {
                 p.performCommand(rest.startsWith("/") ? rest.substring(1) : rest);
                 break;
             case "broadcast":
-                Bukkit.broadcast(Text.parse(rest));
+                Display.broadcast(Text.parse(rest));
                 break;
             default:
                 break;
@@ -285,6 +312,13 @@ public final class ProtectionFeature extends AbstractFeature {
         public void onCommand(PlayerCommandPreprocessEvent e) {
             if (respect && e.isCancelled()) {
                 return;
+            }
+            // /msg y /r los revisa el modulo de mensajes privados (con las reglas del chat): no se revisan dos veces
+            if (plugin.isRunning(PrivateMessagesFeature.class)) {
+                PrivateMessagesFeature pm = plugin.feature(PrivateMessagesFeature.class);
+                if (pm != null && pm.filtersCommand(e.getMessage())) {
+                    return;
+                }
             }
             Player p = e.getPlayer();
             String msg = e.getMessage();

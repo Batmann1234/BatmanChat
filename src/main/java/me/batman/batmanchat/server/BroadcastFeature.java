@@ -67,10 +67,10 @@ public final class BroadcastFeature extends AbstractFeature {
             }
             if (kind.equals("broadcast")) {
                 String text = sec.getString("Prefix", "") + sec.getString("Default_Color", "") + message;
-                Bukkit.broadcast(Text.parse(text));
+                Display.broadcast(Text.parse(text));
             } else {
                 for (String line : sec.getStringList("Message")) {
-                    Bukkit.broadcast(Text.parse(Text.vars(line, "message", message)));
+                    Display.broadcast(Text.parse(Text.vars(line, "message", message)));
                 }
             }
             sound(sec);

@@ -433,7 +433,7 @@ public final class ChatFormatFeature extends AbstractFeature {
         long now = System.currentTimeMillis();
         long cd = (long) (y.getDouble("Cooldown_Aviso", 3) * 1000);
         for (Player o : targets) {
-            if (mentionsOff.contains(o.getUniqueId())) {
+            if (mentionsOff.contains(o.getUniqueId()) || ignores(o, from)) {
                 continue;
             }
             Long last = lastMention.get(o.getUniqueId());
@@ -456,6 +456,15 @@ public final class ChatFormatFeature extends AbstractFeature {
                         y.getInt("Title.Fade_In", 5), y.getInt("Title.Stay", 40), y.getInt("Title.Fade_Out", 10));
             }
         }
+    }
+
+    /** true si "listener" ignora a "from" (/ignore o /ignoreall): no se le avisa ni se le resalta nada. */
+    private boolean ignores(Player listener, Player from) {
+        if (!plugin.isRunning(PrivateMessagesFeature.class)) {
+            return false;
+        }
+        PrivateMessagesFeature f = plugin.feature(PrivateMessagesFeature.class);
+        return f != null && f.isIgnoring(listener, from);
     }
 
     // ------------------------------------------------------------------ respuestas automaticas

@@ -1,6 +1,7 @@
 package me.batman.batmanchat.protection;
 
 import me.batman.batmanchat.BatmanChat;
+import me.batman.batmanchat.util.Display;
 import me.batman.batmanchat.util.Hooks;
 import me.batman.batmanchat.util.Text;
 import org.bukkit.Bukkit;
@@ -328,7 +329,7 @@ public final class ViolationService {
                 }
                 break;
             case "broadcast":
-                Bukkit.broadcast(Text.parse(rest));
+                Display.broadcast(Text.parse(rest));
                 break;
             default:
                 break;
@@ -450,7 +451,7 @@ public final class ViolationService {
             String line = Lang.text("commands.warnings.warned-broadcast-message", "WARNED_DISPLAYNAME", Text.plain(target.displayName()),
                     "WARNER_DISPLAYNAME", warner instanceof Player ? Text.plain(((Player) warner).displayName()) : warnerName,
                     "CURRENT_WARNS", String.valueOf(count), "MAX_WARNS", String.valueOf(max));
-            Bukkit.broadcast(Text.parse(line));
+            Display.broadcast(Text.parse(line));
         }
         discord.manualWarning(warnerName, target.getName(), count);
         runPunishments("manual", target.getUniqueId(), target.getName(), Text.plain(target.displayName()), count, null);

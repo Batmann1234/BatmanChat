@@ -133,10 +133,10 @@ public final class PollFeature extends AbstractFeature {
     private void announceResults(Poll p) {
         YamlConfiguration y = cfg();
         for (String l : y.getStringList("Final.Encabezado")) {
-            Bukkit.broadcast(Text.parse(Text.vars(l, "pregunta", p.question, "creador", p.creator)));
+            Display.broadcast(Text.parse(Text.vars(l, "pregunta", p.question, "creador", p.creator)));
         }
         for (Component c : resultLines(p)) {
-            Bukkit.broadcast(c);
+            Display.broadcast(c);
         }
         int[] c = counts(p);
         int total = 0;
@@ -146,7 +146,7 @@ public final class PollFeature extends AbstractFeature {
             max = Math.max(max, v);
         }
         if (total == 0) {
-            Bukkit.broadcast(Text.parse(y.getString("Final.Sin_Votos", "")));
+            Display.broadcast(Text.parse(y.getString("Final.Sin_Votos", "")));
         } else {
             List<String> winners = new ArrayList<>();
             for (int i = 0; i < c.length; i++) {
@@ -155,13 +155,13 @@ public final class PollFeature extends AbstractFeature {
                 }
             }
             if (winners.size() == 1) {
-                Bukkit.broadcast(Text.parse(Text.vars(y.getString("Final.Ganador", ""), "ganador", winners.get(0))));
+                Display.broadcast(Text.parse(Text.vars(y.getString("Final.Ganador", ""), "ganador", winners.get(0))));
             } else {
-                Bukkit.broadcast(Text.parse(y.getString("Final.Empate", "")));
+                Display.broadcast(Text.parse(y.getString("Final.Empate", "")));
             }
         }
         for (String l : y.getStringList("Final.Pie")) {
-            Bukkit.broadcast(Text.parse(l));
+            Display.broadcast(Text.parse(l));
         }
     }
 
@@ -188,13 +188,13 @@ public final class PollFeature extends AbstractFeature {
         poll = p;
 
         for (String l : y.getStringList("Anuncio")) {
-            Bukkit.broadcast(Text.parse(Text.vars(l, "pregunta", question, "creador", p.creator, "tiempo", String.valueOf(seconds))));
+            Display.broadcast(Text.parse(Text.vars(l, "pregunta", question, "creador", p.creator, "tiempo", String.valueOf(seconds))));
         }
         for (int i = 0; i < options.size(); i++) {
             Component c = Text.parse(Text.vars(y.getString("Opcion_Formato", ""), "n", String.valueOf(i + 1), "opcion", options.get(i)))
                     .hoverEvent(HoverEvent.showText(Text.parse(Text.vars(y.getString("Opcion_Hover", ""), "opcion", options.get(i)))))
                     .clickEvent(ClickEvent.runCommand("/encuesta votar " + (i + 1)));
-            Bukkit.broadcast(c);
+            Display.broadcast(c);
         }
         if (y.getBoolean("Sonido.toggle", false)) {
             Display.sound(new ArrayList<>(Bukkit.getOnlinePlayers()), y.getString("Sonido.value", ""),
