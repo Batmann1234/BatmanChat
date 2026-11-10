@@ -11,7 +11,7 @@
 #  ANTI-DUPE: lo que se muestra es una COPIA del momento en que escribiste el mensaje. El
 #  inventario/ender/vault se abre en un menu de solo lectura y la copia caduca (Expiracion_Segundos).
 #  Los items del menu y del hover son copias LIMPIAS: solo material, cantidad, nombre, lore,
-#  encantamientos y atributos (sin NBT/PersistentData extra, ni contenido de shulkers, ni marcas nuevas).
+#  encantamientos, atributos, flags del tooltip y skull (sin NBT/PersistentData extra, ni contenido de shulkers, ni marcas nuevas).
 #
 #  Permisos (por defecto todos): batmanchat.items.mano, .inv, .ender, .dinero, .ping, .pv
 #  Quitar el cooldown: batmanchat.items.cooldown.bypass
@@ -38,6 +38,15 @@ Cooldown:
 # InteractiveChat: ItemDisplay.Settings.Timeout = 5 minutos.
 Expiracion_Segundos: 300
 Max_Fotos: 300
+
+# Que datos "visuales" se conservan en las copias del menu (!inv, !ec, !pv) y en el hover (!i).
+# Son solo cosmeticos: la copia sigue siendo de solo lectura y sin NBT extra.
+Copiar:
+  # Hide flags (HIDE_ENCHANTS, HIDE_ATTRIBUTES, HIDE_UNBREAKABLE, HIDE_ADDITIONAL_TOOLTIP...), hide tooltip,
+  # estilo de tooltip, brillo forzado e irrompible. Si lo pones en false, todos los items se ven con tooltip completo.
+  Tooltip: true
+  # Textura de las cabezas de jugador (skull). Si lo pones en false, todas se ven como la cabeza por defecto.
+  Skull: true
 
 Tokens:
   mano:

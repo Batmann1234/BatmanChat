@@ -9,8 +9,10 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.List;
 import java.util.Map;
@@ -24,12 +26,25 @@ final class ChatItems {
         return item == null || item.getType().isAir() || item.getAmount() <= 0;
     }
 
+    /** Conservar lo que afecta al tooltip (ItemFlags/hide flags, hide tooltip, estilo, brillo, irrompible). */
+    private static volatile boolean keepTooltip = true;
+    /** Conservar la skin/textura de las cabezas de jugador (skull). */
+    private static volatile boolean keepSkull = true;
+
+    /** Lo llama InteractiveTokensFeature al cargar/recargar items-interactivos.yml. */
+    static void configure(boolean tooltip, boolean skull) {
+        keepTooltip = tooltip;
+        keepSkull = skull;
+    }
+
     /**
      * Copia LIMPIA de un item para mostrarlo: un item nuevo del mismo material y cantidad que solo conserva
-     * nombre, lore, encantamientos (y los almacenados de los libros) y atributos. Todo lo demas (NBT/componentes
-     * custom, PersistentData de otros plugins, contenido de shulkers, libros escritos, cabezas, durabilidad...)
-     * se descarta, asi aunque alguien lograra sacarlo del menu no podria usarse para duplicar items especiales.
-     * No anade ninguna marca ni NBT propio. Devuelve null si el item esta vacio.
+     * nombre, lore, encantamientos (y los almacenados de los libros), atributos y, si estan activados en
+     * items-interactivos.yml (Copiar.*), los datos que cambian como se VE el tooltip (ItemFlags/hide flags,
+     * hide tooltip, estilo de tooltip, brillo forzado, irrompible) y la textura de las cabezas (skull).
+     * Todo lo demas (NBT/componentes custom, PersistentData de otros plugins, contenido de shulkers, libros
+     * escritos, durabilidad...) se descarta, asi aunque alguien lograra sacarlo del menu no podria usarse para
+     * duplicar items especiales. No anade ninguna marca ni NBT propio. Devuelve null si el item esta vacio.
      */
     static ItemStack clean(ItemStack src) {
         if (isEmpty(src)) {
@@ -79,8 +94,69 @@ final class ChatItems {
         } catch (RuntimeException ignored) {
             // meta rara: se muestra lo que se haya copiado
         }
+        if (keepTooltip) {
+            copyTooltip(in, meta);
+        }
+        if (keepSkull) {
+            copySkull(in, meta);
+        }
         out.setItemMeta(meta);
         return out;
+    }
+
+    /** Hide flags (HIDE_ENCHANTS, HIDE_ATTRIBUTES, ...) y demas ajustes visuales del tooltip. Cada uno por separado. */
+    private static void copyTooltip(ItemMeta in, ItemMeta out) {
+        try {
+            for (ItemFlag flag : in.getItemFlags()) {
+                out.addItemFlags(flag);
+            }
+        } catch (RuntimeException ignored) {
+            // sin flags
+        }
+        try {
+            if (in.isHideTooltip()) {
+                out.setHideTooltip(true);
+            }
+        } catch (RuntimeException ignored) {
+            // sin hide tooltip
+        }
+        try {
+            if (in.hasTooltipStyle()) {
+                out.setTooltipStyle(in.getTooltipStyle());
+            }
+        } catch (RuntimeException ignored) {
+            // sin estilo
+        }
+        try {
+            if (in.hasEnchantmentGlintOverride()) {
+                out.setEnchantmentGlintOverride(in.getEnchantmentGlintOverride());
+            }
+        } catch (RuntimeException ignored) {
+            // sin brillo forzado
+        }
+        try {
+            // la linea "Irrompible" solo existe si el item lo es (y HIDE_UNBREAKABLE la oculta)
+            if (in.isUnbreakable()) {
+                out.setUnbreakable(true);
+            }
+        } catch (RuntimeException ignored) {
+            // sin irrompible
+        }
+    }
+
+    /** Textura/skin de una cabeza de jugador (el "id" de la skull). */
+    private static void copySkull(ItemMeta in, ItemMeta out) {
+        if (!(in instanceof SkullMeta skullIn) || !(out instanceof SkullMeta skullOut)) {
+            return;
+        }
+        try {
+            com.destroystokyo.paper.profile.PlayerProfile profile = skullIn.getPlayerProfile();
+            if (profile != null) {
+                skullOut.setPlayerProfile(profile);
+            }
+        } catch (RuntimeException ignored) {
+            // cabeza sin perfil: se ve la cabeza por defecto
+        }
     }
 
     static ItemStack[] cleanAll(ItemStack[] in) {
