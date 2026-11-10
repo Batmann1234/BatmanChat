@@ -1,0 +1,19 @@
+#=================================================================================================#
+#                BatmanChat - chat/reemplazos.yml (cambiar una palabra por otra)
+#=================================================================================================#
+#
+#  Cuando un jugador escribe la palabra de la izquierda, el chat muestra la de la derecha.
+#   - Solo cambia palabras completas ("ez" cambia, "ezequiel" no).
+#   - Da igual si escribe EZ, ez o Ez.
+#   - Mantener_Mayusculas: "EZ" -> "GG" y "Ez" -> "Gg". Con false siempre sale tal cual esta a la derecha.
+#   - Pon entre comillas las palabras "y", "n", "no", "on", "off", "yes" (YAML las confunde con true/false).
+#   - Permiso para saltarselo: batmanchat.reemplazos.bypass
+#
+#=================================================================================================#
+
+Enable: true
+Mantener_Mayusculas: true
+Permiso_Bypass: "batmanchat.reemplazos.bypass"
+
+Reemplazos:
+  ez: gg
