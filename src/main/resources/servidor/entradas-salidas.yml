@@ -8,22 +8,22 @@
 #  Colores: &a, HEX con #RRGGBB, degradados <gradient:#FF0000:#0000FF>texto</gradient>.
 #
 #  1. Primera entrada (First_Join): se muestra a los jugadores que entran por primera vez.
-#     Cada seccion se activa o desactiva por separado y NO es por grupo.
-#  2. Mensajes por defecto (Join_Message, Quit_Message...): se activan si NO quieres mensajes por
-#     grupo. Se envian a quien no tenga el permiso de ningun grupo de Group_Messages.
-#  3. Mensajes por grupo (Group_Messages): el jugador recibe los del grupo cuyo permiso tenga.
-#     - Los nombres de grupo pueden ser cualquiera; el Permission debe ser el que das en LuckPerms.
-#     - Puedes borrar las secciones que no uses (Join_Message, Quit_Message, Actionbar, Title).
-#     - Para que el titulo funcione hacen falta Header y Footer.
-#     - Fade_In, Stay y Fade_Out del titulo se configuran en la seccion Title_Message de arriba.
-#     - Sound se envia a todos los jugadores al entrar y al salir. Ponlo en '' o toggle: false para quitarlo.
-#     - Si un jugador es OP (o tiene varios permisos de grupo) recibe los mensajes del ULTIMO grupo de la lista.
+#     Cada seccion se activa o desactiva por separado.
+#  2. Mensajes de entrada y salida (Join_Quit_Messages): Join_Message, Quit_Message, Actionbar_Message
+#     y Title_Message. Se activan o desactivan por separado con Enable.
+#  3. Permiso_Silencioso: los jugadores con ese permiso entran y salen sin mensaje.
 #  4. Ocultar_Mensajes_Vanish: si el jugador esta en vanish no se muestran sus mensajes de entrada/salida.
 #
 #=================================================================================================#
 
 # Nombre del servidor para la variable {server_name}.
 Server_Name: "Valterion"
+
+# Permiso para entrar y salir SIN mensaje (ni el de entrada, ni el de salida, ni el de primera entrada).
+# El jugador sigue recibiendo su MOTD, actionbar y titulo. Dalo por LuckPerms:
+#   /lp group staff permission set batmanchat.join.silent true
+# Deja "" para desactivarlo.
+Permiso_Silencioso: "batmanchat.join.silent"
 
 # Ocultar los mensajes de entrada/salida de los jugadores en vanish (Essentials, SuperVanish, PremiumVanish).
 Ocultar_Mensajes_Vanish: true
@@ -62,10 +62,7 @@ Messages:
 
   Join_Quit_Messages:
     Join_Message:
-      # Deja en false si usas mensajes por grupo.
-      # Activalo si no quieres usar mensajes por grupo.
-      # Se envian a quien no tenga el permiso de ningun grupo. Lo mismo aplica a Quit, Actionbar y Title.
-      Enable: false
+      Enable: true
       sound:
         toggle: false
         value: 'ENTITY_PLAYER_LEVELUP'
@@ -74,7 +71,7 @@ Messages:
       Message: "&8[#00FF3F+&8]&f {player}"
 
     Quit_Message:
-      Enable: false
+      Enable: true
       sound:
         toggle: false
         value: 'ENTITY_PLAYER_LEVELUP'
@@ -88,48 +85,13 @@ Messages:
 
     Title_Message:
       Enable: false
-      # Fade_In, Stay y Fade_Out se aplican a todos los titulos (por defecto y por grupo).
+      # Fade_In, Stay y Fade_Out del titulo.
       Fade_In: 40
       Stay: 20
       Fade_Out: 40
       Message:
         Header: "&eBienvenido de vuelta"
         Footer: "&b{player} a {server_name}"
-
-    # Mensajes por grupo. Puedes anadir todas las secciones que quieras.
-    Group_Messages:
-      Enable: true
-      # Nombre del grupo (puede ser cualquiera).
-      Default:
-        # Permiso que se le da al grupo para que reciba estos mensajes.
-        Permission: "chatmanager.join.staff"
-        Join_Message: ""
-        Quit_Message: ""
-        # Mensaje de actionbar que reciben al entrar.
-        Actionbar: ""
-        # Titulo que reciben al entrar.
-        Title:
-          Header: ""
-          Footer: ""
-        sound:
-          toggle: false
-          value: 'ENTITY_PLAYER_LEVELUP'
-          pitch: 1.0
-          volume: 1.0
-
-      Donator:
-        Permission: "chatmanager.join.default"
-        Join_Message: "&8[#00FF3F+&8]&f {player}"
-        Quit_Message: ""
-        Actionbar: ""
-        Title:
-          Header: ""
-          Footer: ""
-        sound:
-          toggle: false
-          value: 'ENTITY_PLAYER_LEVELUP'
-          pitch: 1.0
-          volume: 1.0
 
 #=================================================================================================#
 # MOTD: mensaje de bienvenida al entrar.

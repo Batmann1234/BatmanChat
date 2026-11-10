@@ -1,22 +1,22 @@
 #=================================================================================================#
-#              BatmanChat - chat/items-interactivos.yml (!mano, !inv, !ender, !dinero, !ping)
+#              BatmanChat - chat/items-interactivos.yml (reemplazo de InteractiveChat)
 #=================================================================================================#
 #
-#  Tambien !pv <numero> (ej: !pv 3) muestra uno de tus vaults de AxVaults en modo solo lectura.
+#  Valores copiados de tu config.yml de InteractiveChat:
+#    !item / !i / !!objeto  -> mano        !inventario / !inv / !inventory   -> inv
+#    !enderchest / !ender / !ec -> ender   !money / !m / !dinero             -> dinero
+#    !internet / !ms / !ping -> ping
+#  NUEVO: !pv <numero> (ej: !pv 3 o !pv3) -> pv: muestra uno de tus vaults de AxVaults en solo lectura.
 #
-#  Al escribir !mano en el chat se muestra el item que llevas en la mano (con hover del item),
-#  !inv tu inventario (click para verlo), !ender tu cofre de ender, !dinero tu dinero y !ping tu ping.
-#  Es parecido a InteractiveChat pero integrado, no necesita ningun otro plugin.
+#  ANTI-DUPE: lo que se muestra es una COPIA del momento en que escribiste el mensaje. El
+#  inventario/ender se abre en un menu de solo lectura y la copia caduca (Expiracion_Segundos).
 #
-#  ANTI-DUPE: lo que se muestra es una COPIA (foto) del momento en que escribiste el mensaje.
-#  El inventario/ender se abre en un menu de solo lectura donde no se puede sacar, mover ni
-#  arrastrar nada, y la foto caduca pasado un tiempo.
-#
-#  Permisos (por defecto todos los jugadores): batmanchat.items.mano, .inv, .ender, .dinero, .ping, .pv
+#  Permisos (por defecto todos): batmanchat.items.mano, .inv, .ender, .dinero, .ping, .pv
 #  Quitar el cooldown: batmanchat.items.cooldown.bypass
-#  El dinero necesita Vault + un plugin de economia (Essentials, etc).
+#  El dinero necesita Vault + un plugin de economia.
 #
-#  Variables de los formatos: {item} (solo mano), {player}, {dinero}, {ping}
+#  Variables: {item} (solo mano, opcional), {player}, {dinero}, {ping}
+#  Colores: &a, &#RRGGBB, #RRGGBB (BatmanChat no lee <#RRGGBB>).
 #
 #=================================================================================================#
 
@@ -25,82 +25,66 @@ Enable: true
 # Caracter que va delante de cada palabra.
 Prefijo: "!"
 
-# Maximo de tokens que se convierten en un solo mensaje (el resto queda como texto).
-Max_Por_Mensaje: 3
+# Maximo de tokens por mensaje (InteractiveChat: MaxPlaceholders -1 = sin limite).
+Max_Por_Mensaje: 10
 
-# Cooldown en segundos para usar los tokens, por rango. Se usa el MENOR de los grupos del jugador.
-# Los nombres son grupos de LuckPerms (permiso group.<nombre>). 0 = sin espera.
+# Cooldown en segundos (InteractiveChat: 3 para todos). Para dar menos espera a un rango anade
+# su grupo de LuckPerms, por ejemplo:   hero: 1
 Cooldown:
-  default: 10
-  hero: 8
-  elite: 7
-  legendario: 6
-  arcano: 5
-  ancestral: 4
-  miniyt: 5
-  pascua: 8
-  valterion: 3
-  helper: 2
-  modjr: 2
-  mod: 1
-  owner: 0
-  config: 0
+  default: 3
 
-# Segundos que se puede abrir un inventario/ender mostrado en el chat (despues caduca).
-Expiracion_Segundos: 600
-# Maximo de fotos guardadas a la vez (las mas viejas se borran).
+# InteractiveChat: ItemDisplay.Settings.Timeout = 5 minutos.
+Expiracion_Segundos: 300
 Max_Fotos: 300
 
 Tokens:
   mano:
-    # Palabras que activan este token (se escribe con el prefijo: !mano).
-    Alias: [mano, hand, item]
-    Formato: "&8[&f{item}&8]"
+    Alias: [item, i, objeto, mano, hand]
+    # {item} es opcional: sin el, se ve este texto; con el cursor encima se ve el item y con clic se abre la vista.
+    Formato: "&f[&aObjeto de {player}&f]"
+    Titulo_Menu: "&fItem de {player}"
   inv:
-    Alias: [inv, inventario, inventory]
-    Formato: "&8[&a{player} &7- &aInventario&8]"
+    Alias: [inventario, inv, inventory]
+    Formato: "&f[&aInventario de {player}&f]"
     Hover:
-      - "&7Inventario de &f{player}"
-      - "&eClic para verlo"
-    Titulo_Menu: "&8Inventario de {player}"
+      - "&aClick para ver!"
+    Titulo_Menu: "&aInventario de {player}"
   ender:
-    Alias: [ender, enderchest, e]
-    Formato: "&8[&5{player} &7- &5Ender Chest&8]"
+    Alias: [enderchest, ender, ec]
+    Formato: "&f[&aEnderChest de {player}&f]"
     Hover:
-      - "&7Ender Chest de &f{player}"
-      - "&eClic para verlo"
-    Titulo_Menu: "&8Ender Chest de {player}"
-  dinero:
-    Alias: [dinero, money, balance]
-    Formato: "&8[&6{dinero}&8]"
-    Hover:
-      - "&7Dinero de &f{player}"
+      - "&aClick para ver!"
+    Titulo_Menu: "&aInventario de {player}"
   pv:
     Alias: [pv, vault, baul]
-    # Se escribe con numero: !pv 3  o  !pv3
+    # Se escribe con numero: !pv 3  o  !pv3  (sin numero no se convierte).
     Acepta_Numero: true
     # Comando que abre TU vault numero {numero} en AxVaults. Cambialo si en tu servidor es otro (ej: "vault {numero}").
-    # BatmanChat lo ejecuta como el jugador, copia el contenido en cuanto se abre y lo cierra al instante,
-    # asi que el jugador necesita permiso para ese vault (el de AxVaults) y no se toca la API interna de AxVaults.
+    # BatmanChat lo ejecuta como el jugador, copia el contenido en cuanto se abre y lo cierra al instante
+    # (mientras tanto bloquea sus clics). El jugador necesita el permiso de AxVaults para ese vault.
     Comando: "pv {numero}"
     # Milisegundos maximos que espera a que AxVaults abra el vault.
     Espera_Maxima_Ms: 2500
-    Formato: "&8[&b{player} &7- &bVault {numero}&8]"
+    Formato: "&f[&aVault {numero} de {player}&f]"
     Hover:
-      - "&7Vault &f{numero} &7de &f{player}"
-      - "&eClic para verlo"
-    Titulo_Menu: "&8Vault {numero} de {player}"
+      - "&aClick para ver!"
+    Titulo_Menu: "&aVault {numero} de {player}"
+  dinero:
+    Alias: [money, m, dinero]
+    Formato: "[Dinero de {player}]"
+    Hover:
+      - "&fDinero de {player}: &a{dinero}"
   ping:
-    Alias: [ping]
-    Formato: "&8[&a{ping}ms&8]"
+    Alias: [internet, ms, ping]
+    Formato: "Mi ping actual es &a{ping}&ams"
     Hover:
-      - "&7Ping de &f{player}"
+      - "&7Ping de {player}"
 
 Mensajes:
-  Cooldown: "{Prefix} &cEspera &e{segundos}s &cantes de volver a mostrar algo en el chat."
-  Mano_Vacia: "{Prefix} &cNo tienes ningun item en la mano."
+  Cooldown: "&fDebes esperar&a {segundos}s &fantes de usar &aeso &fotra vez!"
+  Mano_Vacia: "&fDebes tener algo en tu mano para usar este comando!"
   Sin_Economia: "{Prefix} &cEl dinero no esta disponible ahora mismo."
   Cierra_Inventario: "{Prefix} &cCierra el inventario que tienes abierto para mostrar tu vault."
   Vault_No_Disponible: "{Prefix} &cNo se pudo abrir tu vault {numero} (no existe o no tienes permiso)."
-  Caducado: "{Prefix} &cEsa vista ya caduco."
+  Caducado: "&aLa sesion ha expirado"
   Solo_Jugadores: "{Prefix} &cSolo los jugadores pueden abrir esto."

@@ -93,6 +93,9 @@ permissions:
     default: true
   batmanchat.menciones.todos:
     default: op
+  batmanchat.join.silent:
+    description: Entrar y salir sin mensaje en el chat.
+    default: false
   batmanchat.vanish.see:
     default: op
   batmanchat.items.mano:

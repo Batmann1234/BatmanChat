@@ -60,6 +60,7 @@ Los permisos viejos de ChatManager/ChatSentry **tambien funcionan** (`chatmanage
 - Encuestas: `batmanchat.encuesta.votar` (todos), `batmanchat.encuesta.crear`
 - Tienda: `batmanchat.tienda.admin`
 - Protecciones: `batmanchat.proteccion.bypass` (todas), `batmanchat.proteccion.<modulo>.bypass`, `.warn`, `.warnings`, `.lockdown`, `.lookup`, `.notify`, `.commandspy`, `.commandspy.toggle`, `.commandspy.exempt`, `.warn.exempt`, `.autopunisher.exempt`
+- Entrar/salir sin mensaje: `batmanchat.join.silent` (nombre configurable en `Permiso_Silencioso` de `servidor/entradas-salidas.yml`)
 - Mensajes de entrada/salida por grupo: los permisos que pusiste en `servidor/entradas-salidas.yml` (`chatmanager.join.staff`, `chatmanager.join.default`). Siguen siendo los de siempre: hay que darlos por LuckPerms.
 
 Los OP se saltan las protecciones, salvo los modulos que marques en `override-bypass-permissions` de `proteccion/config.yml`.

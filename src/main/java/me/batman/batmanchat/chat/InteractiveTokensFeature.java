@@ -391,7 +391,11 @@ public final class InteractiveTokensFeature extends AbstractFeature {
                     Text.send(p, y.getString("Mensajes.Mano_Vacia", ""));
                     return null;
                 }
-                return ChatItems.formatted(fmt, s.hand, "player", name);
+                View v = new View(name, "mano", null, null, null, null);
+                v.pv = new ItemStack[]{s.hand.clone()};
+                String id = store(v);
+                return ChatItems.formatted(fmt, s.hand, "player", name)
+                        .clickEvent(ClickEvent.runCommand("/batmanchat ver " + id));
             }
             case "inv":
             case "ender": {
@@ -470,7 +474,13 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         YamlConfiguration y = cfg();
         ViewHolder h = new ViewHolder();
         Inventory inv;
-        if (v.kind.equals("pv")) {
+        if (v.kind.equals("mano")) {
+            String title = y.getString("Tokens.mano.Titulo_Menu", "&fItem de {player}");
+            inv = Bukkit.createInventory(h, 27, Text.parse(Text.vars(title, "player", v.owner)));
+            if (v.pv.length > 0 && v.pv[0] != null) {
+                inv.setItem(13, v.pv[0].clone());
+            }
+        } else if (v.kind.equals("pv")) {
             String title = y.getString("Tokens.pv.Titulo_Menu", "&8Vault {numero} de {player}");
             int size = Math.max(9, Math.min(54, ((v.pv.length + 8) / 9) * 9));
             inv = Bukkit.createInventory(h, size, Text.parse(Text.vars(title, "player", v.owner, "numero", String.valueOf(v.number))));
