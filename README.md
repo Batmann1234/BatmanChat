@@ -20,7 +20,7 @@ plugins/BatmanChat/
   mensajes.yml                    prefijo y mensajes generales
   anuncios/    anuncios.yml  config.yml  placeholders.yml  mensajes.yml      (InfiniteAnnouncements)
   servidor/    entradas-salidas.yml  broadcast.yml                           (ChatManager)
-  chat/        formato.yml  emojis.yml  menciones.yml  respuestas-automaticas.yml
+  chat/        mensajes-privados.yml  formato.yml  emojis.yml  menciones.yml  respuestas-automaticas.yml
                items-interactivos.yml  muertes.yml  clearchat.yml  mutechat.yml  staffchat.yml
   tienda.yml   encuestas.yml
   proteccion/  config.yml (interruptor de cada proteccion + contextos)  lang.yml  almacenamiento.yml  lockdown.yml
@@ -40,7 +40,12 @@ plugins/BatmanChat/
 | `/encuesta crear|votar|resultados|cerrar` | encuestas |
 | `/batmanchat menciones` | activar/desactivar tus avisos de mencion |
 | `/batmanchat compra <jugador> <paquete> [precio] [transaccion]` | anuncio de compra (consola/Tebex) |
+| `/msg <jugador> <mensaje>`, `/r <mensaje>` | mensajes privados (con `!i`, `!inv`, `!ender`, `!pv 3`, `!ping`... dentro) |
+| `/ignore <jugador>`, `/ignore list`, `/unignore <jugador>`, `/ignoreall` | ignorar chat y mensajes privados |
+| `/batmanchat spy` | ver los mensajes privados de los demas (`batmanchat.msg.spy`) |
 | `/kcs`, `/cswarn`, `/cswarnings`, `/cslockdown`, `/commandspy` | protecciones (igual que ChatSentry) |
+
+`/msg` y `/r` pasan por las mismas protecciones que el chat publico (modulos con `chat: true` en `proteccion/config.yml`).
 
 ### Tebex
 En cada paquete anade el comando: `batmanchat compra {username} hero {price} {transaction}`
@@ -56,6 +61,7 @@ Los permisos viejos de ChatManager/ChatSentry **tambien funcionan** (`chatmanage
 - Chat: `batmanchat.clearchat`, `.clearchat.bypass`, `.mutechat`, `.mutechat.bypass`, `.staffchat`, `.delay.bypass`
 - Colores del mensaje: `batmanchat.color.all`, `.color.<codigo>`, `.color.hex`, `.color.gradient`, `.format.all`, `.format.<codigo>`
 - Emojis/menciones: `batmanchat.emojis`, `batmanchat.menciones`, `batmanchat.menciones.todos`
+- Mensajes privados: `batmanchat.msg` (todos), `batmanchat.msg.spy`, `batmanchat.ignore` (todos), `batmanchat.ignoreall` (todos), `batmanchat.ignore.exempt` (dalo al staff: no se les puede ignorar)
 - Tokens: `batmanchat.items.mano|inv|ender|dinero|ping|pv|ver` (todos), `batmanchat.items.cooldown.bypass`
 - Encuestas: `batmanchat.encuesta.votar` (todos), `batmanchat.encuesta.crear`
 - Tienda: `batmanchat.tienda.admin`
@@ -73,4 +79,4 @@ Los OP se saltan las protecciones, salvo los modulos que marques en `override-by
 - Tu config de ChatManager tenia `Formatted_Messages.enable: false`, por eso `Colores_En_Mensajes` esta en `false`.
 
 ## No incluido (no lo pediste)
-Opciones de ChatSentry `context-prediction` y `max-recursion-depth` (no se portaron; los filtros funcionan sin ellas), comprobar actualizaciones, mensajes por red/multiservidor. Mensajes privados (`/msg`, los maneja Essentials), social spy, lista de staff/jugadores, reglas, chat por mundo/radio, comandos baneados, logs de chat.
+Opciones de ChatSentry `context-prediction` y `max-recursion-depth` (no se portaron; los filtros funcionan sin ellas), comprobar actualizaciones, mensajes por red/multiservidor. Lista de staff/jugadores, reglas, chat por mundo/radio, comandos baneados, logs de chat.
