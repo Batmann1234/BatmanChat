@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -294,6 +295,89 @@ public final class ChatFormatFeature extends AbstractFeature {
         return ACCENTS.matcher(n).replaceAll("");
     }
 
+    // ------------------------------------------------------------------ reemplazo de palabras (chat/reemplazos.yml)
+
+    private String replaceWords(Player p, String plain) {
+        YamlConfiguration y = plugin.cfg("chat/reemplazos.yml");
+        if (!y.getBoolean("Enable", true) || plain.isEmpty()) {
+            return plain;
+        }
+        String bypass = y.getString("Permiso_Bypass", "batmanchat.reemplazos.bypass");
+        if (bypass != null && !bypass.isEmpty() && p.hasPermission(bypass)) {
+            return plain;
+        }
+        ConfigurationSection rep = y.getConfigurationSection("Reemplazos");
+        if (rep == null) {
+            return plain;
+        }
+        boolean keep = y.getBoolean("Mantener_Mayusculas", true);
+        String out = plain;
+        for (String key : rep.getKeys(false)) {
+            if (key.isBlank()) {
+                continue;
+            }
+            final String to = rep.getString(key, "");
+            Pattern pat = Pattern.compile("(?<![\\p{L}\\p{N}_])" + Pattern.quote(key) + "(?![\\p{L}\\p{N}_])",
+                    Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+            out = pat.matcher(out).replaceAll(mr -> Matcher.quoteReplacement(keep ? matchCase(mr.group(), to) : to));
+        }
+        return out;
+    }
+
+    private static String matchCase(String src, String to) {
+        if (to.isEmpty()) {
+            return to;
+        }
+        boolean upper = src.length() > 1 && src.equals(src.toUpperCase(Locale.ROOT))
+                && !src.equals(src.toLowerCase(Locale.ROOT));
+        if (upper) {
+            return to.toUpperCase(Locale.ROOT);
+        }
+        if (Character.isUpperCase(src.charAt(0))) {
+            return Character.toUpperCase(to.charAt(0)) + to.substring(1);
+        }
+        return to;
+    }
+
+    // ------------------------------------------------------------------ comandos clicables (chat/comandos-clicables.yml)
+
+    private Component applyCommands(Player p, Component msg, String plain) {
+        YamlConfiguration y = plugin.cfg("chat/comandos-clicables.yml");
+        if (!y.getBoolean("Enable", true) || plain.indexOf('[') < 0 || plain.indexOf('/') < 0) {
+            return msg;
+        }
+        String perm = y.getString("Permiso", "");
+        if (perm != null && !perm.isEmpty() && !p.hasPermission(perm)) {
+            return msg;
+        }
+        final int max = Math.max(1, y.getInt("Max_Por_Mensaje", 3));
+        final String fmt = y.getString("Formato", "&b[&e{command}&b]");
+        final boolean run = "RUN_COMMAND".equalsIgnoreCase(y.getString("Accion", "SUGGEST_COMMAND"));
+        final List<String> hoverLines = y.getStringList("Hover");
+        final Set<String> blocked = new HashSet<>();
+        for (String b : y.getStringList("Comandos_Bloqueados")) {
+            blocked.add(b.toLowerCase(Locale.ROOT).replaceFirst("^/", ""));
+        }
+        final AtomicInteger count = new AtomicInteger();
+        return msg.replaceText(b -> b.match(Pattern.compile("\\[(/[^\\]\\s][^\\]]{0,99})\\]")).replacement((r, tb) -> {
+            String cmd = r.group(1).trim();
+            String base = cmd.substring(1).split("\\s+")[0].toLowerCase(Locale.ROOT);
+            if (count.get() >= max || blocked.contains(base)) {
+                return Component.text(r.group());
+            }
+            count.incrementAndGet();
+            Component hv = Component.empty();
+            for (int i = 0; i < hoverLines.size(); i++) {
+                if (i > 0) {
+                    hv = hv.append(Component.newline());
+                }
+                hv = hv.append(Text.parse(Text.vars(hoverLines.get(i), "command", cmd)));
+            }
+            Component c = Text.parse(Text.vars(fmt, "command", cmd)).hoverEvent(HoverEvent.showText(hv));
+            return c.clickEvent(run ? ClickEvent.runCommand(cmd) : ClickEvent.suggestCommand(cmd));
+        }));
+    }
+
     // ------------------------------------------------------------------ eventos
 
     private final class Events implements Listener {
@@ -320,7 +404,7 @@ public final class ChatFormatFeature extends AbstractFeature {
                 return;
             }
 
-            final String plain = Text.plain(e.message());
+            final String plain = replaceWords(p, Text.plain(e.message()));
 
             // ---- mensaje: items interactivos / colores / emojis
             Component msg = null;
@@ -334,6 +418,7 @@ public final class ChatFormatFeature extends AbstractFeature {
                 msg = messageComponent(p, plain);
             }
             msg = applyEmojis(p, msg, plain);
+            msg = applyCommands(p, msg, plain);
 
             // ---- menciones
             YamlConfiguration my = mentions();
