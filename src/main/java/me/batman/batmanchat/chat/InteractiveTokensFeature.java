@@ -142,9 +142,11 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         final ItemStack[] armor;
         final ItemStack offhand;
         final ItemStack[] ender;
+        final ItemStack hand;
         final long created = System.currentTimeMillis();
 
-        View(String owner, String kind, ItemStack[] storage, ItemStack[] armor, ItemStack offhand, ItemStack[] ender) {
+        View(String owner, String kind, ItemStack[] storage, ItemStack[] armor, ItemStack offhand, ItemStack[] ender, ItemStack hand) {
+            this.hand = hand;
             this.owner = owner;
             this.kind = kind;
             this.storage = storage;
@@ -310,11 +312,13 @@ public final class InteractiveTokensFeature extends AbstractFeature {
                     Text.send(p, y.getString("Mensajes.Mano_Vacia", ""));
                     return null;
                 }
-                return ChatItems.formatted(fmt, s.hand, "player", name);
+                String id = store(new View(name, "mano", null, null, null, null, s.hand.clone()));
+                return ChatItems.formatted(fmt, s.hand, "player", name)
+                        .clickEvent(ClickEvent.runCommand("/batmanchat ver " + id));
             }
             case "inv":
             case "ender": {
-                String id = store(new View(name, token, s.storage, s.armor, s.offhand, s.ender));
+                String id = store(new View(name, token, s.storage, s.armor, s.offhand, s.ender, null));
                 Component c = Text.parse(Text.vars(fmt, "player", name));
                 Component hover = hoverLines(p, t, "player", name);
                 return c.hoverEvent(HoverEvent.showText(hover)).clickEvent(ClickEvent.runCommand("/batmanchat ver " + id));
@@ -376,7 +380,18 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         YamlConfiguration y = cfg();
         ViewHolder h = new ViewHolder();
         Inventory inv;
-        if (v.kind.equals("ender")) {
+        if (v.kind.equals("mano")) {
+            String title = y.getString("Tokens.mano.Titulo_Menu", "&fItem de {player}");
+            inv = Bukkit.createInventory(h, 27, Text.parse(Text.vars(title, "player", v.owner)));
+            ItemStack pane = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+            ItemMeta pm = pane.getItemMeta();
+            pm.displayName(Component.text(" "));
+            pane.setItemMeta(pm);
+            for (int i = 0; i < 27; i++) {
+                inv.setItem(i, pane.clone());
+            }
+            inv.setItem(13, v.hand.clone());
+        } else if (v.kind.equals("ender")) {
             String title = y.getString("Tokens.ender.Titulo_Menu", "&8Ender Chest de {player}");
             inv = Bukkit.createInventory(h, 27, Text.parse(Text.vars(title, "player", v.owner)));
             for (int i = 0; i < 27 && i < v.ender.length; i++) {
