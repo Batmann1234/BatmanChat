@@ -28,6 +28,11 @@ Server_Name: "Valterion"
 # Ocultar los mensajes de entrada/salida de los jugadores en vanish (Essentials, SuperVanish, PremiumVanish).
 Ocultar_Mensajes_Vanish: true
 
+# Permiso para NO mostrar el mensaje de entrada ni de salida (util para staff que entra en silencio).
+# Dalo por LuckPerms:  lp group staff permission set batmanchat.silentjoin true
+# Dejalo vacio ("") para desactivar esta funcion.
+Permiso_Ocultar_Mensajes: "batmanchat.silentjoin"
+
 Messages:
   # Si el mensaje de entrada por defecto debe quitarse y enviarse un tick despues como broadcast.
   # Util si algunos placeholders no estan cargados justo al entrar (por ejemplo el plugin TAB).
