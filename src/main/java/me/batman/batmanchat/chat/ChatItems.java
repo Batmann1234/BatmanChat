@@ -4,15 +4,24 @@ import me.batman.batmanchat.util.Text;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import com.google.common.collect.Multimap;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.ShulkerBox;
+import org.bukkit.inventory.meta.ArmorMeta;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.List;
 import java.util.Map;
@@ -30,23 +39,41 @@ final class ChatItems {
     private static volatile boolean keepTooltip = true;
     /** Conservar la skin/textura de las cabezas de jugador (skull). */
     private static volatile boolean keepSkull = true;
+    /** Conservar el contenido de las shulker boxes (cada item de dentro tambien se limpia). */
+    private static volatile boolean keepShulker = true;
+    /** Conservar el color de la armadura de cuero. */
+    private static volatile boolean keepDye = true;
+    /** Conservar los trims de armadura. */
+    private static volatile boolean keepTrim = true;
+    /** Conservar los efectos/tipo/color de pociones y flechas con efecto. */
+    private static volatile boolean keepPotion = true;
 
     /** Lo llama InteractiveTokensFeature al cargar/recargar items-interactivos.yml. */
-    static void configure(boolean tooltip, boolean skull) {
+    static void configure(boolean tooltip, boolean skull, boolean shulker, boolean dye, boolean trim, boolean potion) {
         keepTooltip = tooltip;
         keepSkull = skull;
+        keepShulker = shulker;
+        keepDye = dye;
+        keepTrim = trim;
+        keepPotion = potion;
     }
 
     /**
      * Copia LIMPIA de un item para mostrarlo: un item nuevo del mismo material y cantidad que solo conserva
      * nombre, lore, encantamientos (y los almacenados de los libros), atributos y, si estan activados en
-     * items-interactivos.yml (Copiar.*), los datos que cambian como se VE el tooltip (ItemFlags/hide flags,
-     * hide tooltip, estilo de tooltip, brillo forzado, irrompible) y la textura de las cabezas (skull).
-     * Todo lo demas (NBT/componentes custom, PersistentData de otros plugins, contenido de shulkers, libros
-     * escritos, durabilidad...) se descarta, asi aunque alguien lograra sacarlo del menu no podria usarse para
-     * duplicar items especiales. No anade ninguna marca ni NBT propio. Devuelve null si el item esta vacio.
+     * items-interactivos.yml (Copiar.*), datos puramente VISUALES: ItemFlags/hide flags, hide tooltip, estilo de
+     * tooltip, brillo forzado, irrompible, textura de cabezas (skull), contenido de shulkers (cada item de
+     * dentro tambien se limpia), color de cuero, trims y efectos de pociones.
+     * Todo lo demas (NBT/componentes custom, PersistentData de otros plugins como MythicMobs, libros escritos,
+     * durabilidad...) se descarta SIEMPRE, tambien en los items de dentro de las shulkers: la copia se construye
+     * desde un item nuevo, nunca se clona el original. No anade ninguna marca ni NBT propio.
+     * Devuelve null si el item esta vacio.
      */
     static ItemStack clean(ItemStack src) {
+        return clean(src, 0);
+    }
+
+    private static ItemStack clean(ItemStack src, int depth) {
         if (isEmpty(src)) {
             return null;
         }
@@ -99,6 +126,18 @@ final class ChatItems {
         }
         if (keepSkull) {
             copySkull(in, meta);
+        }
+        if (keepDye) {
+            copyDye(in, meta);
+        }
+        if (keepTrim) {
+            copyTrim(in, meta);
+        }
+        if (keepPotion) {
+            copyPotion(in, meta);
+        }
+        if (keepShulker && depth == 0) {
+            copyShulker(in, meta, depth);
         }
         out.setItemMeta(meta);
         return out;
@@ -205,5 +244,89 @@ final class ChatItems {
                 .append(Text.parse(after))
                 .build();
         return c.hoverEvent(item.asHoverEvent());
+    }
+
+    /** Color de armadura de cuero. */
+    private static void copyDye(ItemMeta in, ItemMeta out) {
+        if (!(in instanceof LeatherArmorMeta dyeIn) || !(out instanceof LeatherArmorMeta dyeOut)) {
+            return;
+        }
+        try {
+            Color color = dyeIn.getColor();
+            if (color != null) {
+                dyeOut.setColor(color);
+            }
+        } catch (RuntimeException ignored) {
+            // sin color
+        }
+    }
+
+    /** Trim de armadura (material + patron). */
+    private static void copyTrim(ItemMeta in, ItemMeta out) {
+        if (!(in instanceof ArmorMeta trimIn) || !(out instanceof ArmorMeta trimOut)) {
+            return;
+        }
+        try {
+            ArmorTrim trim = trimIn.getTrim();
+            if (trim != null) {
+                trimOut.setTrim(trim);
+            }
+        } catch (RuntimeException ignored) {
+            // sin trim
+        }
+    }
+
+    /** Tipo base, efectos personalizados y color de pociones / flechas con efecto. */
+    private static void copyPotion(ItemMeta in, ItemMeta out) {
+        if (!(in instanceof PotionMeta potIn) || !(out instanceof PotionMeta potOut)) {
+            return;
+        }
+        try {
+            if (potIn.getBasePotionType() != null) {
+                potOut.setBasePotionType(potIn.getBasePotionType());
+            }
+        } catch (RuntimeException ignored) {
+            // sin tipo base
+        }
+        try {
+            for (PotionEffect effect : potIn.getCustomEffects()) {
+                potOut.addCustomEffect(effect, true);
+            }
+        } catch (RuntimeException ignored) {
+            // sin efectos
+        }
+        try {
+            if (potIn.hasColor() && potIn.getColor() != null) {
+                potOut.setColor(potIn.getColor());
+            }
+        } catch (RuntimeException ignored) {
+            // sin color
+        }
+    }
+
+    /** Contenido de una shulker box: cada item de dentro pasa por clean(), asi no arrastra NBT ni PersistentData. */
+    private static void copyShulker(ItemMeta in, ItemMeta out, int depth) {
+        if (!(in instanceof BlockStateMeta bsIn) || !(out instanceof BlockStateMeta bsOut)) {
+            return;
+        }
+        try {
+            if (!bsIn.hasBlockState() || !(bsIn.getBlockState() instanceof ShulkerBox boxIn)) {
+                return;
+            }
+            BlockState outState = bsOut.getBlockState();
+            if (!(outState instanceof ShulkerBox boxOut)) {
+                return;
+            }
+            ItemStack[] contents = boxIn.getInventory().getContents();
+            for (int i = 0; i < contents.length && i < boxOut.getInventory().getSize(); i++) {
+                ItemStack inner = clean(contents[i], depth + 1);
+                if (inner != null) {
+                    boxOut.getInventory().setItem(i, inner);
+                }
+            }
+            bsOut.setBlockState(boxOut);
+        } catch (RuntimeException ignored) {
+            // shulker rara: se muestra vacia
+        }
     }
 }

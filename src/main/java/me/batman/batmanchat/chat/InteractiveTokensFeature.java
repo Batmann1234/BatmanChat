@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
  * Config: chat/items-interactivos.yml.
  *
  * Anti-dupe / anti-exploit de paquetes retrasados:
- *  - Todo lo que se muestra es una copia LIMPIA (ChatItems.clean): nombre, lore, encantamientos, atributos, flags del tooltip y skull.
+ *  - Todo lo que se muestra es una copia LIMPIA (ChatItems.clean): nombre, lore, encantamientos, atributos y datos visuales (flags, skull, shulker, color, trims, pociones); nunca NBT/PersistentData.
  *  - La foto de inventario/ender/vault se toma en un unico tick (y el jugador queda bloqueado mientras se lee el vault).
  *  - Los menus son de solo lectura (clic, arrastre, creativo, mover, tirar, F) y se vacian al cerrarse.
  *  - Un jugador solo puede tener UNA captura de vault a la vez (antes dos mensajes seguidos quitaban el bloqueo).
@@ -90,7 +90,9 @@ public final class InteractiveTokensFeature extends AbstractFeature {
         lastUse.clear();
         lastOpen.clear();
         capturing.clear();
-        ChatItems.configure(cfg().getBoolean("Copiar.Tooltip", true), cfg().getBoolean("Copiar.Skull", true));
+        ChatItems.configure(cfg().getBoolean("Copiar.Tooltip", true), cfg().getBoolean("Copiar.Skull", true),
+                cfg().getBoolean("Copiar.Contenido_Shulker", true), cfg().getBoolean("Copiar.Color_Cuero", true),
+                cfg().getBoolean("Copiar.Trims", true), cfg().getBoolean("Copiar.Pociones", true));
         buildPattern();
         listen(new GuiEvents());
         plugin.registerSub("ver", new ViewSub());

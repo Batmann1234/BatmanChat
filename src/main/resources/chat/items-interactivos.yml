@@ -11,7 +11,7 @@
 #  ANTI-DUPE: lo que se muestra es una COPIA del momento en que escribiste el mensaje. El
 #  inventario/ender/vault se abre en un menu de solo lectura y la copia caduca (Expiracion_Segundos).
 #  Los items del menu y del hover son copias LIMPIAS: solo material, cantidad, nombre, lore,
-#  encantamientos, atributos, flags del tooltip y skull (sin NBT/PersistentData extra, ni contenido de shulkers, ni marcas nuevas).
+#  encantamientos, atributos y datos visuales (flags, skull, shulker, color, trims, pociones). Sin NBT/PersistentData (MythicMobs, etc.) ni marcas nuevas.
 #
 #  Permisos (por defecto todos): batmanchat.items.mano, .inv, .ender, .dinero, .ping, .pv
 #  Quitar el cooldown: batmanchat.items.cooldown.bypass
@@ -47,6 +47,16 @@ Copiar:
   Tooltip: true
   # Textura de las cabezas de jugador (skull). Si lo pones en false, todas se ven como la cabeza por defecto.
   Skull: true
+  # Contenido de las shulker boxes (cada item de dentro tambien se copia limpio, como cualquier otro).
+  Contenido_Shulker: true
+  # Color de las armaduras de cuero.
+  Color_Cuero: true
+  # Trims de armadura.
+  Trims: true
+  # Tipo, efectos y color de pociones y flechas con efecto.
+  Pociones: true
+  # NUNCA se copia el NBT / PersistentData / componentes custom (ej: items de MythicMobs): ni en el item
+  # ni en los items de dentro de las shulkers. Solo se copian los datos visuales de arriba.
 
 Tokens:
   mano:
