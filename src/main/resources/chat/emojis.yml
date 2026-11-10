@@ -1,0 +1,35 @@
+#=================================================================================================#
+#                    BatmanChat - chat/emojis.yml (emojis en el chat)
+#=================================================================================================#
+#
+#  Escribe :nombre: en el chat y se cambia por el simbolo.
+#  Permiso para usarlos: batmanchat.emojis (por defecto todos). Si Permiso_Por_Emoji es true,
+#  cada emoji necesita batmanchat.emojis.<nombre> (sin los dos puntos).
+#
+#=================================================================================================#
+
+Enable: true
+Permiso_Por_Emoji: false
+
+Emojis:
+  ":corazon:": "&c❤&r"
+  ":heart:": "&c❤&r"
+  ":estrella:": "&e★&r"
+  ":star:": "&e★&r"
+  ":sonrisa:": "&e☺&r"
+  ":smile:": "&e☺&r"
+  ":triste:": "&e☹&r"
+  ":sol:": "&e☀&r"
+  ":nube:": "&f☁&r"
+  ":rayo:": "&e⚡&r"
+  ":espada:": "&f⚔&r"
+  ":check:": "&a✔&r"
+  ":x:": "&c✘&r"
+  ":musica:": "&b♫&r"
+  ":calavera:": "&f☠&r"
+  ":flecha:": "&7➤&r"
+  ":diamante:": "&b◆&r"
+  ":corona:": "&6♛&r"
+  ":fuego:": "&6🔥&r"
+  ":gg:": "&a&lGG&r"
+  ":o7:": "&f&lo7&r"

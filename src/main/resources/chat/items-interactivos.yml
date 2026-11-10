@@ -1,0 +1,87 @@
+#=================================================================================================#
+#              BatmanChat - chat/items-interactivos.yml (!mano, !inv, !ender, !dinero, !ping)
+#=================================================================================================#
+#
+#  Al escribir !mano en el chat se muestra el item que llevas en la mano (con hover del item),
+#  !inv tu inventario (click para verlo), !ender tu cofre de ender, !dinero tu dinero y !ping tu ping.
+#  Es parecido a InteractiveChat pero integrado, no necesita ningun otro plugin.
+#
+#  ANTI-DUPE: lo que se muestra es una COPIA (foto) del momento en que escribiste el mensaje.
+#  El inventario/ender se abre en un menu de solo lectura donde no se puede sacar, mover ni
+#  arrastrar nada, y la foto caduca pasado un tiempo.
+#
+#  Permisos (por defecto todos los jugadores): batmanchat.items.mano, .inv, .ender, .dinero, .ping
+#  Quitar el cooldown: batmanchat.items.cooldown.bypass
+#  El dinero necesita Vault + un plugin de economia (Essentials, etc).
+#
+#  Variables de los formatos: {item} (solo mano), {player}, {dinero}, {ping}
+#
+#=================================================================================================#
+
+Enable: true
+
+# Caracter que va delante de cada palabra.
+Prefijo: "!"
+
+# Maximo de tokens que se convierten en un solo mensaje (el resto queda como texto).
+Max_Por_Mensaje: 3
+
+# Cooldown en segundos para usar los tokens, por rango. Se usa el MENOR de los grupos del jugador.
+# Los nombres son grupos de LuckPerms (permiso group.<nombre>). 0 = sin espera.
+Cooldown:
+  default: 10
+  hero: 8
+  elite: 7
+  legendario: 6
+  arcano: 5
+  ancestral: 4
+  miniyt: 5
+  pascua: 8
+  valterion: 3
+  helper: 2
+  modjr: 2
+  mod: 1
+  owner: 0
+  config: 0
+
+# Segundos que se puede abrir un inventario/ender mostrado en el chat (despues caduca).
+Expiracion_Segundos: 600
+# Maximo de fotos guardadas a la vez (las mas viejas se borran).
+Max_Fotos: 300
+
+Tokens:
+  mano:
+    # Palabras que activan este token (se escribe con el prefijo: !mano).
+    Alias: [mano, hand, item]
+    Formato: "&8[&f{item}&8]"
+  inv:
+    Alias: [inv, inventario, inventory]
+    Formato: "&8[&a{player} &7- &aInventario&8]"
+    Hover:
+      - "&7Inventario de &f{player}"
+      - "&eClic para verlo"
+    Titulo_Menu: "&8Inventario de {player}"
+  ender:
+    Alias: [ender, enderchest, e]
+    Formato: "&8[&5{player} &7- &5Ender Chest&8]"
+    Hover:
+      - "&7Ender Chest de &f{player}"
+      - "&eClic para verlo"
+    Titulo_Menu: "&8Ender Chest de {player}"
+  dinero:
+    Alias: [dinero, money, balance]
+    Formato: "&8[&6{dinero}&8]"
+    Hover:
+      - "&7Dinero de &f{player}"
+  ping:
+    Alias: [ping]
+    Formato: "&8[&a{ping}ms&8]"
+    Hover:
+      - "&7Ping de &f{player}"
+
+Mensajes:
+  Cooldown: "{Prefix} &cEspera &e{segundos}s &cantes de volver a mostrar algo en el chat."
+  Mano_Vacia: "{Prefix} &cNo tienes ningun item en la mano."
+  Sin_Economia: "{Prefix} &cEl dinero no esta disponible ahora mismo."
+  Caducado: "{Prefix} &cEsa vista ya caduco."
+  Solo_Jugadores: "{Prefix} &cSolo los jugadores pueden abrir esto."

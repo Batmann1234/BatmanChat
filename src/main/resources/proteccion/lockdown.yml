@@ -1,0 +1,14 @@
+# --------------------------------------------------------------------------------------
+# BatmanChat - proteccion/lockdown.yml
+# Bloqueo del servidor. Se controla con /cslockdown y se guarda aqui (persiste al reiniciar).
+# Puede impedir la entrada a jugadores que nunca habian entrado, o a todos menos a los exentos.
+# Pensado para casos de ataques de bots, pero se puede usar para otros fines.
+# Los mensajes de expulsion estan en proteccion/lang.yml (lang.lockdown).
+# --------------------------------------------------------------------------------------
+
+active: false
+# Modos validos: 'only-known', 'only-exempt'
+current-mode: "only-known"
+exempt-usernames:
+- "Notch"
+- "jeb_"

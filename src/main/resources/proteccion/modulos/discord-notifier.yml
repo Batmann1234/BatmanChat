@@ -1,0 +1,136 @@
+# --------------------------------------------------------------------------------------
+# Notificaciones a Discord (Discord Notifier):
+# Envia avisos por webhook a Discord cuando un modulo detecta un mensaje o accion, cuando se advierte a un
+# jugador (manual o automaticamente), se perdonan advertencias, expiran advertencias automaticas y cuando el
+# auto castigo castiga a un jugador.
+# Se activa/desactiva en proteccion/config.yml (discord-notifier.enabled) y cada seccion tiene su propio "enabled".
+#
+# En Discord: Ajustes del servidor > Integraciones > Webhooks > Crear webhook, y pega la URL en cada seccion.
+# Usa \\n para insertar saltos de linea.
+# --------------------------------------------------------------------------------------
+
+notification-config:
+
+  footer-text: "BatmanChat"
+  # Icono del pie: pon un enlace directo a una imagen, o deja "DEFAULT"/vacio para no usar icono
+  footer-icon: "DEFAULT"
+
+  # Available placeholders:
+  # {MODULE} - module name from lang.yml
+  # {CONTEXT} - trigger context from lang.yml
+  # {PLAYER}, {PLAYER_DISPLAYNAME} - player names
+  module-triggers:
+    enabled: false
+    # Below are the modules that support real time notifications. Which of them should notifications be enabled for?
+    # Please note that changing below values for modules which are not enabled in config.yml will have no effect.
+    enable-notifications-for:
+      chat-cooldown: true
+      link-and-ad-blocker: true
+      word-and-phrase-filter: true
+      spam-blocker: true
+      unicode-remover: true
+      cap-limiter: true
+      anti-parrot: true
+      anti-chat-flood: true
+      anti-statue-spambot: true
+      chat-executor: true
+    webhook:
+      # in Discord: Server Settings > Integrations > Create Webhook
+      url: "paste webhook url here"
+      # You can ping users/roles or add other text here to be sent before the embed. Leave blank to send nothing outside the embed
+      # You can obtain role/user ids by enabling developer mode in Discord settings and right-clicking a user / role
+      # To ping a role, use '<@&ROLE_ID>' replacing ROLE_ID with the id of the role
+      # To ping a user, use '<@USER_ID>' replacing USER_ID with the id of the user
+      outside-embed-content: ""
+      # Hex: https://www.google.com/search?q=color+picker
+      color: "#4b7bec"
+      display-name: "{MODULE} - {CONTEXT}"
+      header: "{PLAYER}"
+      # The embed will automatically include necessary fields as needed
+      blocked-content-field: "__Flagged Content__"
+      full-content-field: "__Full Message__"
+
+
+  # Available placeholders:
+  # {WARNER}, {WARNED}, WARNER or WARNED: {X_DISPLAYNAME} - player names
+  # {COUNT} - warning count for warned player
+  manual-warnings:
+    enabled: false
+    webhook:
+      # in Discord: Server Settings > Integrations > Create Webhook
+      url: "paste webhook url here"
+      # You can ping users/roles or add other text here to be sent before the embed. Leave blank to send nothing outside the embed
+      # You can obtain role/user ids by enabling developer mode in Discord settings and right-clicking a user / role
+      # To ping a role, use '<@&ROLE_ID>' replacing ROLE_ID with the id of the role
+      # To ping a user, use '<@USER_ID>' replacing USER_ID with the id of the user
+      outside-embed-content: ""
+      # Hex: https://www.google.com/search?q=color+picker
+      color: "#ff6348"
+      display-name: "CSWarning Applied"
+      content: "**{WARNER}** warned **{WARNED}**\\n\\n**Total Count:** {COUNT}"
+
+
+  # Available placeholders:
+  # {WARNED}, {WARNED_DISPLAYNAME} - player names
+  # {MODULE} - module name
+  # {COUNT} - warning count for warned player
+  # {WARNING_LIFETIME} - warning lifetime in hours
+  # {EXPIRY_DATE} - date of warning auto expiry
+  auto-warnings:
+    enabled: false
+    webhook:
+      # in Discord: Server Settings > Integrations > Create Webhook
+      url: "paste webhook url here"
+      # You can ping users/roles or add other text here to be sent before the embed. Leave blank to send nothing outside the embed
+      # You can obtain role/user ids by enabling developer mode in Discord settings and right-clicking a user / role
+      # To ping a role, use '<@&ROLE_ID>' replacing ROLE_ID with the id of the role
+      # To ping a user, use '<@USER_ID>' replacing USER_ID with the id of the user
+      outside-embed-content: ""
+      # Hex: https://www.google.com/search?q=color+picker
+      color: "#ffc107"
+      display-name: "Auto Warning"
+      content: "The **{MODULE}** module auto-warned **{WARNED}**\\n\\n**Total Count:** {COUNT}\\n\\n**Warning Lifetime:** {WARNING_LIFETIME} hours ({EXPIRY_DATE})"
+
+
+  # Available placeholders:
+  # {PARDONER}, {PARDONED}, PARDONER or PARDONED: {X_DISPLAYNAME} - player names
+  # {COUNT} - warning count for warned player
+  # {MODULE} - moudle name if applicable
+  warning-pardons:
+    enabled: false
+    webhook:
+      # in Discord: Server Settings > Integrations > Create Webhook
+      url: "paste webhook url here"
+      # You can ping users/roles or add other text here to be sent before the embed. Leave blank to send nothing outside the embed
+      # You can obtain role/user ids by enabling developer mode in Discord settings and right-clicking a user / role
+      # To ping a role, use '<@&ROLE_ID>' replacing ROLE_ID with the id of the role
+      # To ping a user, use '<@USER_ID>' replacing USER_ID with the id of the user
+      outside-embed-content: ""
+      # Hex: https://www.google.com/search?q=color+picker
+      color: "#0be881"
+      display-name: "CSWarning Pardon"
+      autowarning-expire-content: "One of **{PARDONED}s** {MODULE} auto warnings has expired\\n\\n**Remaining Warnings:** {COUNT}"
+      pardoned-manual-content: "**{PARDONER}** pardoned 1 of **{PARDONED}'s** manually given warnings\\n\\n**Remaining Warnings:** {COUNT}"
+      pardoned-all-manual-content: "**{PARDONER}** pardoned all of **{PARDONED}'s** manually given warnings"
+      cleared-module-content: "**{PARDONER}** pardoned all **{PARDONED}'s** **{MODULE}** warnings"
+      cleared-all-modules-content: "**{PARDONER}** pardoned all **{PARDONED}'s** module warnings"
+
+
+  # Available placeholders:
+  # {PLAYER}, {PLAYER_DISPLAYNAME} - player names
+  # {COUNT} - warning count for warned player
+  # {MODULE} - module name
+  auto-punisher:
+    enabled: false
+    webhook:
+      # in Discord: Server Settings > Integrations > Create Webhook
+      url: "paste webhook url here"
+      # You can ping users/roles or add other text here to be sent before the embed. Leave blank to send nothing outside the embed
+      # You can obtain role/user ids by enabling developer mode in Discord settings and right-clicking a user / role
+      # To ping a role, use '<@&ROLE_ID>' replacing ROLE_ID with the id of the role
+      # To ping a user, use '<@USER_ID>' replacing USER_ID with the id of the user
+      outside-embed-content: ""
+      # Hex: https://www.google.com/search?q=color+picker
+      color: "#dc3545"
+      display-name: "Auto Punisher"
+      content: "Executed punishment actions on **{PLAYER}** for receiving **{COUNT} {MODULE}** warnings"

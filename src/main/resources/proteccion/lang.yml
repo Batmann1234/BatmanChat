@@ -1,0 +1,249 @@
+# --------------------------------------------------------------------------------------
+# BatmanChat - proteccion/lang.yml
+# Mensajes de las protecciones (antes lang.yml de ChatSentry).
+#
+# Todos los textos aceptan colores con "&" y HEX con &#RRGGBB o #RRGGBB.
+# Pon cualquier mensaje en "" para desactivarlo.
+# {PREFIX} inserta 'misc.message-prefix'. {NL} separa lineas dentro de un mensaje.
+# --------------------------------------------------------------------------------------
+
+lang:
+
+  modules:
+
+    admin-notifier:
+      # Variables para nombres de jugador en los avisos:
+      # {PLAYER} - nombre de usuario
+      # {PLAYER_DISPLAYNAME} - nombre mostrado con sus colores
+      # {PLAYER_DISPLAYNAME_STRIPPED} - nombre mostrado sin colores
+
+      # Mensaje enviado a ops o jugadores con el permiso batmanchat.proteccion.notify cuando se bloquea un mensaje.
+      notify-msg: "&7(&a{VIOLATION_TYPE}&8 - &a{CONTEXT}&7) &f{PLAYER} &7escribió: &8'&f&o{BLOCKED_CONTENT}&8' &7(Mensaje completo: &8'&f&o{ENTIRE_MESSAGE}&8'&7)"
+
+      # Si un modulo no puede mostrar el contenido exacto bloqueado se usa este mensaje.
+      no-content-notify-msg: "&7(&a{VIOLATION_TYPE}&8 - &a{CONTEXT}&7) &f{PLAYER} &7escribió: &8'&f&o{ENTIRE_MESSAGE}&8'"
+
+      # Formato para avisos personalizados de algunos modulos.
+      custom-notify-msg: "&7(&a{VIOLATION_TYPE}&8 - &a{CONTEXT}&7) &7{NOTIFICATION}"
+
+
+      join-reminder: "{PREFIX} &fRecordatorio: Actualmente tienes desactivadas las notificaciones de infracciones de BatmanChat. Para volver a activarlas, escribe &a/kcs tvn"
+
+    anti-chat-flood:
+      trigger-repeated: "{PREFIX} &fPor favor utiliza menos repeticiones de letras o símbolos en tus mensajes y así evitar saturar el chat."
+      trigger-too-long: "{PREFIX} &fTu mensaje fue bloqueado porque satura el chat; por favor, evita enviar mensajes extensos para no afectar a los demás."
+
+    anti-command-prefix:
+      trigger: "{PREFIX} &fNo tienes permiso para utilizar comandos con prefijo de ese módulo. Tu comando se ejecutó sin el prefijo."
+
+    # Usa lineas reales (- "texto") en lugar de {NL}
+    anti-join-flood:
+      kick:
+      - "&fDemasiados jugadores están intentando iniciar sesión en este momento."
+      - "&fPor favor, inténtalo de nuevo en unos minutos."
+
+    # Usa lineas reales (- "texto") en lugar de {NL}
+    anti-relog-spam:
+      on-cooldown-kick:
+      - "&fEstás volviendo a iniciar sesión demasiado rápido."
+      - "&r"
+      - "&7Por favor, espera &a{SECONDS} segundos &7antes de volver a conectarte."
+      notification: "&7(&aAnti Relog Spam&7) &f{PLAYER} &7no pudo iniciar sesión; volvió a conectarse demasiado rápido (en enfriamiento de &f{SECONDS}s&7)"
+
+    anti-parrot:
+      trigger: "{PREFIX} &fPara reducir la saturación del chat, por favor no copies los mensajes de otros."
+
+    anti-statue-spambot:
+      trigger: "{PREFIX} &fPor favor, muévete antes de usar el chat; esto es para evitar los bots de spam."
+
+    cap-limiter:
+      trigger: "{PREFIX} &fPor favor, ten en cuenta a los demás en el chat y usa menos mayúsculas en tus mensajes."
+
+    chat-cooldown:
+      trigger: "{PREFIX} &f¡Demasiado rápido! Por favor, espera un poco antes de volver a chatear."
+
+    command-spy:
+      # Variables del formato de command spy:
+      # {PLAYER} - nombre de usuario
+      # {PLAYER_DISPLAYNAME} - nombre mostrado con sus colores
+      # {PLAYER_DISPLAYNAME_STRIPPED} - nombre mostrado sin colores
+      format: "&7{PLAYER}&8: &7&o{COMMAND}"
+
+    link-and-ad-blocker:
+      trigger: "{PREFIX} &fMensaje bloqueado: '&#2AFF39{BLOCKED_CONTENT}&f'. Es potencialmente un enlace o una IP que no está permitida en el chat."
+
+    spam-blocker:
+      trigger: "{PREFIX} &fPara reducir la saturación del chat, por favor evita repetir el mismo mensaje (o uno similar) con tanta rapidez."
+      singular-message-spam-trigger: "{PREFIX} &fTu mensaje fue bloqueado porque se identificó que contenía contenido similar al spam."
+
+    unicode-remover:
+      trigger: "{PREFIX} &fEl uso de caracteres Unicode visualmente idénticos está estrictamente prohibido en el chat."
+
+    word-and-phrase-filter:
+      trigger: "{PREFIX} &fTu mensaje contenía '&#2AFF39{BLOCKED_CONTENT}&f' y fue bloqueado. Este tipo de lenguaje o temas no son adecuados para este servidor; ¡por favor, lee las &#2AFF39/rules &fpara asegurarte de cumplirlas!"
+
+  misc:
+
+    message-prefix: "&#2AFF39&lCHAT &8» &r"
+    no-permission: "{PREFIX} &fNo tienes permiso para hacer eso."
+
+    # Encabezado y pie de los mensajes de bloqueo de los modulos (se envian antes/despues).
+    block-message-header: ""
+    block-message-footer: ""
+
+  violation-types:
+
+    on-cooldown: "Cooldown"
+    link-or-ad-block: "Enlace/Anuncio"
+    message-filter-block: "Filtro"
+    spam-block: "Spam"
+    unicode-character-block: "Unicode"
+    cap-limiter-block: "Mayúsculas"
+    anti-parrot-block: "Copia de mensajes"
+    anti-chat-flood-block: "Saturación de chat"
+    anti-statue-spambot-block: "Bot estatua"
+    anti-join-flood-block: "Saturación de conexiones"
+    chat-executor-match: "Ejecutor de chat"
+
+  contexts:
+
+    chat: "Chat"
+    command: "Comando"
+    anvil: "Yunque"
+    book: "Libro"
+    sign: "Cartel"
+    join: "Conexión"
+    other: "Otro"
+
+  commands:
+
+    lockdown:
+      toggled-on: "{PREFIX} &fEl bloqueo del servidor ahora solo permite conectarse a jugadores &a{MODE}&f. Ejecuta /cslockdown para desactivarlo."
+      toggled-off: "{PREFIX} &fBloqueo del servidor &7desactivado&f: se permite la conexión de &atodos los jugadores no baneados"
+      already-off: "{PREFIX} &fEl bloqueo ya está desactivado. Para activarlo, especifica un modo después de /cslockdown"
+      exempt-list: "{PREFIX} &fLos siguientes nombres de usuario están exentos explícitamente: &a{LIST}"
+      no-exempt: "{PREFIX} &fNo hay jugadores exentos definidos. Para añadir uno, usa /cslockdown add <usuario>"
+      exemption-added: "{PREFIX} &fEl usuario &7'&a{USERNAME}&7' &fha sido añadido a la lista de exenciones"
+      exemption-removed: "{PREFIX} &fEl usuario &7'&a{USERNAME}&7' &fha sido eliminado de la lista de exenciones"
+      unknown-remove: "{PREFIX} &7'&a{USERNAME}&7' &fya no está exento"
+      already-exempt: "{PREFIX} &7'&a{USERNAME}&7' &fya está exento"
+
+    commandspy:
+      toggled-on: "{PREFIX} &fTus notificaciones de command spy han sido &a&lactivadas&f."
+      toggled-off: "{PREFIX} &fTus notificaciones de command spy han sido &7&ldesactivadas&f."
+      # (BatmanChat) Si el modulo command-spy esta apagado en proteccion/config.yml
+      disabled: "{PREFIX} &fEl command spy esta desactivado en la configuracion."
+
+    tvn:
+      toggled-on: "{PREFIX} &fTus notificaciones de infracciones han sido &a&lactivadas&f."
+      toggled-off: "{PREFIX} &fTus notificaciones de infracciones han sido &7&ldesactivadas&f."
+
+    clearchat:
+      chat-cleared: "{PREFIX} &fEl chat ha sido limpiado por {PLAYER_DISPLAYNAME}&f."
+      bypass-notif: "&7&oTu chat no fue limpiado porque estás exento."
+
+    togglechat:
+      chat-toggled-on: "{PREFIX} &fEl chat ha sido &aactivado&f por {PLAYER_DISPLAYNAME}&f."
+      chat-toggled-off: "{PREFIX} &fEl chat ha sido &7desactivado&f por {PLAYER_DISPLAYNAME}&f."
+      chat-is-toggled: "&fNo se pudo enviar el mensaje: el chat está desactivado actualmente."
+
+    # (BatmanChat) Comando /kcs (ayuda, recarga y busqueda en el registro de infracciones)
+    kcs:
+      help:
+      - "{PREFIX} &fComandos de proteccion:"
+      - "&8» &a/kcs tvn &7- activa/desactiva los avisos de infracciones"
+      - "&8» &a/kcs commandspy &7- activa/desactiva el command spy"
+      - "&8» &a/kcs lookup <jugador> [modulo] &7- consulta el registro de infracciones"
+      - "&8» &a/kcs reload &7- recarga BatmanChat"
+      player-only: "{PREFIX} &fEste comando solo lo pueden usar jugadores."
+      reloaded: "{PREFIX} &fBatmanChat fue recargado."
+
+    lookup:
+      usage: "{PREFIX} &fUso: /kcs lookup <jugador> [modulo]"
+      logging-disabled: "{PREFIX} &fEl registro de infracciones esta desactivado (enable-violations-log en proteccion/config.yml)."
+      none: "{PREFIX} &fNo se encontraron infracciones para &a{INPUT}&f."
+      header: "{PREFIX} &fUltimas infracciones de &a{INPUT}&f:"
+      line: "&8[&7{TIME}&8] &a{MODULE} &8(&7{CONTEXT}&8) &f&o{CONTENT}"
+
+    warnings:
+      # For player names in the below messages you can use:
+      # {PLAYER} - nombre de usuario
+      # {PLAYER_DISPLAYNAME} - nombre mostrado con sus colores
+      # {PLAYER_DISPLAYNAME_STRIPPED} - nombre mostrado sin colores
+      # {CURRENT_WARNS} - current general warning count
+      # {MAX_WARNS} - maximum general warning count
+      been-warned: "{PREFIX} &fHas recibido una advertencia de &#2AFF39{PLAYER}&f. &7(&f&l{CURRENT_WARNS}&8/&#2AFF39&l{MAX_WARNS}&7)"
+      warnings-were-pardoned: "{PREFIX} &f&a{PLAYER}&f ha borrado tus advertencias dadas por administradores."
+      warning-was-pardoned: "{PREFIX} &f&a{PLAYER}&f ha perdonado una de tus advertencias dadas por administradores. &7(&f&l{CURRENT_WARNS}&8/&#2AFF39&l{MAX_WARNS}&7)"
+
+      # For player names in the below messages you can use:
+      # {WARNER} - warner player username
+      # {WARNER_DISPLAYNAME} - warner player display name with its original colors
+      # {WARNER_DISPLAYNAME_STRIPPED} - warner player display name stripped of its original colors
+      # {WARNED} - warned player username
+      # {WARNED_DISPLAYNAME} - warned player display name with its original colors
+      # {WARNED_DISPLAYNAME_STRIPPED} - warned player display name stripped of its original colors
+      # {CURRENT_WARNS} - current general warning count
+      # {MAX_WARNS} - maximum general warning count
+      warned-broadcast-message: "{PREFIX} &#2AFF39{WARNED_DISPLAYNAME} &ffue advertido por &#2AFF39{WARNER_DISPLAYNAME}&f. &7(&f&l{CURRENT_WARNS}&8/&#2AFF39&l{MAX_WARNS}&7)"
+
+      # For player names in the below messages you can use:
+      # {PLAYER} - nombre de usuario
+      # {CURRENT_WARNS} - current general warning count
+      # {MAX_WARNS} - maximum general warning count
+      warned-player: "{PREFIX} &a{PLAYER} &fha sido advertido correctamente. &7(&f&l{CURRENT_WARNS}&8/&#2AFF39&l{MAX_WARNS}&7)"
+      all-warnings-pardoned: "{PREFIX} &fSe borraron correctamente las advertencias dadas por administradores a &a{PLAYER}&f."
+      pardoned-warning: "{PREFIX} &fSe perdonó correctamente una de las advertencias dadas por administradores a &a{PLAYER}&f. &7(&f&l{CURRENT_WARNS}&8/&#2AFF39&l{MAX_WARNS}&7)"
+
+      # For player names in the below messages you can use:
+      # {PLAYER} - nombre de usuario
+      # {MODULE_NAME} - name of the module
+      cleared-module-warnings: "{PREFIX} &fSe borraron correctamente las advertencias de {MODULE_NAME} de &a{PLAYER}&f."
+      cleared-all-warnings: "{PREFIX} &fSe borraron correctamente todas las advertencias de &a{PLAYER}&f."
+      module-warnings-were-cleared: "{PREFIX} &f&a{PLAYER}&f ha borrado tus advertencias de {MODULE_NAME}."
+
+      # For player names in the below message you can use:
+      # {PLAYER} - nombre de usuario
+      all-warnings-were-cleared: "{PREFIX} &f&a{PLAYER}&f ha perdonado todas tus advertencias."
+
+      # Command messages
+
+      warn:
+        usage: "{PREFIX} &fUso: /cswarn <jugador>"
+        manual-warns-disabled: "{PREFIX} &fLas advertencias manuales están desactivadas."
+        invalid-player: "{PREFIX} &fJugador no válido: '{INPUT}'. Ten en cuenta que el jugador debe estar conectado para advertirlo."
+        player-exempt: "{PREFIX} &f{INPUT} está exento de advertencias."
+        reached-max: "{PREFIX} &f{INPUT} ha alcanzado el máximo de advertencias manuales configurado y no puede ser advertido de nuevo."
+
+      warnings:
+        usage: "{PREFIX} &fUso: /cswarnings {ARG} <jugador>"
+        cmw-usage: "{PREFIX} &fUso: /cswarnings {ARG} <jugador> <'all' o nombre-del-módulo>"
+        detailed-usage: "&f¡Uso del comando no válido! Uso:"
+        pardon-note: "&7Nota: Los perdones solo se aplican a las advertencias recibidas mediante /cswarn"
+        couldnt-fetch: "{PREFIX} &fNo se pudo obtener el UUID de '{INPUT}'. O la cuenta no existe, o se te está limitando por exceso de solicitudes (se pidieron demasiados UUID a Mojang muy rápido)"
+        no-data: "{PREFIX} &aNo se encontraron advertencias activas."
+        no-modules: "{PREFIX} &fNingún módulo tiene las advertencias activadas en la configuración del castigo automático."
+        no-warnings-found: "{PREFIX} No se encontraron advertencias actuales para &a{INPUT}"
+        no-warnings-found-for-module: "{PREFIX} No se encontraron advertencias de {MODULE} para &a{INPUT}"
+        invalid-module: "{PREFIX} &fNombre de módulo no válido: '{INPUT}'. Recuerda separar el nombre con guiones (-)."
+        # (BatmanChat) /cswarnings view <jugador>
+        view-header: "{PREFIX} &fAdvertencias actuales de &a{INPUT}&f:"
+        view-line: "&8» &7{MODULE}&8: &f&l{COUNT}"
+
+  lockdown:
+
+    # Mensaje de expulsion cuando solo se permite entrar a jugadores conocidos
+    only-known-allowed-message:
+    - "&#2AFF39&l¡Volveremos pronto!"
+    - ""
+    - "&fEl servidor está abierto actualmente solo para jugadores que ya han jugado antes"
+    - ""
+    - "&f¡Por favor, vuelve más tarde, gracias por tu paciencia!"
+
+    # Mensaje de expulsion cuando solo se permite entrar a jugadores exentos
+    only-exempt-allowed-message:
+    - "&#2AFF39&l¡Volveremos pronto!"
+    - ""
+    - "&fEl servidor está cerrado temporalmente, por favor vuelve más tarde"
+    - ""
+    - "&f¡Gracias por tu paciencia!"

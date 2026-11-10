@@ -1,0 +1,28 @@
+# --------------------------------------------------------------------------------------
+# Avisos a admins (Admin Notifier):
+# Avisa en tiempo real a los admins cuando se activa un modulo de proteccion, con informacion detallada.
+# Para recibir avisos: op o el permiso "batmanchat.proteccion.notify".
+# Cada admin puede activar/desactivar sus avisos con /kcs tvn.
+# Se activa/desactiva en proteccion/config.yml (admin-notifier.enabled).
+# --------------------------------------------------------------------------------------
+
+# Modulos que avisan en tiempo real. Cambiar un modulo que esta apagado en proteccion/config.yml no tiene efecto.
+
+enable-notifications-for:
+  chat-cooldown: true
+  link-and-ad-blocker: true
+  word-and-phrase-filter: true
+  spam-blocker: true
+  unicode-remover: true
+  cap-limiter: true
+  anti-parrot: true
+  anti-chat-flood: true
+  anti-statue-spambot: true
+  anti-join-flood: true
+  chat-executor: true
+
+# Enviar tambien los avisos a la consola, ademas de a los jugadores con permiso.
+send-to-console: true
+
+# Recordar al entrar a los admins que tienen los avisos desactivados.
+remind-notifs-toggled-off-on-join: true

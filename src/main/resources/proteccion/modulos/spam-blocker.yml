@@ -1,0 +1,75 @@
+# BatmanChat - proteccion/modulos/spam-blocker.yml
+# (Valores y listas tal como los tenias en ChatSentry. Los comentarios estan en ingles, como el original.)
+# Tambien se acepta el permiso viejo de bypass (chatsentry.*) y el general batmanchat.proteccion.bypass.
+# --------------------------------------------------------------------------------------
+# Intelligent Spam Blocker:
+# Accurately blocks spammy messages by examining their word, character, and sequence diversity in comparison to the messages length. Additionally prevents players from repeating the same or similar messages over and over within a short period of time with a dynamically adjusting repeat cooldown.
+# Bypass permission: "batmanchat.proteccion.spam-blocker.bypass"
+# --------------------------------------------------------------------------------------
+
+# Some players (or more likely bots) may append random sequences of numbers and other characters to their messages to try and evade filters like this one. This option will try to simplify incoming message data before core processing in attempt to combat this behavior. If you have false positive issues, try increasing the block-repeated-message-similarity-threshold value or turning this option off
+flood-combater: true
+
+# Should singular messages the module determines to likely be spam be blocked? Ex. players repeating the same or similar word or phrase over and over in the same message
+# Messages are determined as spam based off their length vs character sequence repetition, word diversity, and character diversity
+block-singular-message-spam: true
+
+# How sensitive should the singular message processor be?
+# LOWEST - very lenient
+# LOW - lenient
+# NORMAL - applicable for most servers
+# HIGH - extra strict
+# HIGHEST - should ONLY be used when absolutely necessary becasue it's very limiting on chat
+singular-message-spam-processor-sensitivity: "NORMAL"
+
+# If a player's message isn't similar to one of the messages on the phrase-whitelist, the below threshold value is used.
+
+# How similar must a player's current message be to their last message(s) within the repeat-cooldown-in-seconds period in order to be blocked?
+#
+# 1.0 = message will be blocked only if it's exactly (100%) the same as one of their previous messages within the repeat-cooldown-in-seconds period.
+# 0.0 = message needs to be 0% similar to their last message(s) within the repeat-cooldown-in-seconds period in order to be blocked. (this eliminates the purpose of the similarity checker)
+block-repeated-message-similarity-threshold: 0.82
+
+# This is how many times a player can repeat any messages they said within the last (roughly) repeat-cooldown-in-seconds period of time before being blocked for spam (messages on or similar to the phrase-whitelist will be ignored).
+allowed-repeats: 4
+
+# How long after a player sends a message should the module forget that a player said the message? (and allow them to repeat it or a similar message again)
+repeat-cooldown-in-seconds: 15
+
+# The phrases below are phrases that can be said over and over in separate messages
+# Character case in the below list does NOT matter. Case variants are automatically checked by the plugin.
+# Set to "phrase-whitelist: []" to have an empty list.
+phrase-whitelist:
+- "wb"
+- "welcome back"
+- "wbbb"
+- "weba"
+- "yes"
+- "yea"
+- "ok"
+- "sure"
+- "no"
+- "nope"
+- "nah"
+- "yup"
+- "yep"
+- "yeh"
+
+# How similar must a message be to a phrase on the list above to be allowed through? (in %)
+# 1.0 = exactly as one of the phrases on the list (excluding character case)
+# 0.0 = not exact at all (this eliminates the purpose of the whitelist)
+phrase-whitelist-similarity-threshold: 0.65
+
+# IMPORTANT: The below list will only work if the COMMAND context is enabled under spam-blocker in the main config!
+# The below list is which commands the module will apply to. It's recommended to only set these to your private messaging commands.
+# Set the list to "affected-commands: []" to apply the module to ALL commands (highly not recommended!)
+# Make sure to only include base commands; don't add any command arguments. (spaces)
+affected-commands:
+- "/tell"
+- "/t"
+- "/msg"
+- "/w"
+- "/r"
+- "/whisper"
+- "/w"
+- "/pm"

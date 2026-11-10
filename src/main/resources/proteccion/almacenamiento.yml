@@ -1,0 +1,17 @@
+# --------------------------------------------------------------------------------------
+# BatmanChat - proteccion/almacenamiento.yml
+# Donde se guardan las preferencias de los jugadores, el registro de infracciones y las advertencias.
+# --------------------------------------------------------------------------------------
+
+# Opciones: "SQLITE" "MYSQL"
+# SQLITE: los datos se guardan en archivos .db locales (plugins/BatmanChat/proteccion/datos/)
+# MYSQL: los datos se guardan en la base de datos remota indicada abajo (recomendado para redes)
+type: "SQLITE"
+
+# Credenciales de MySQL
+mysql:
+  host: "localhost"
+  port: 3306
+  user: "root"
+  password: ""
+  database: "chatsentry"

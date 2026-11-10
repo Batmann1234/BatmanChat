@@ -1,0 +1,57 @@
+# BatmanChat - proteccion/modulos/auto-grammar.yml
+# (Valores y listas tal como los tenias en ChatSentry. Los comentarios estan en ingles, como el original.)
+# Tambien se acepta el permiso viejo de bypass (chatsentry.*) y el general batmanchat.proteccion.bypass.
+# --------------------------------------------------------------------------------------
+# Auto Grammar:
+# Converts players' messages to use proper capitalization, periods, and correct typos in chat and configured or all commands.
+# Bypass permission: "batmanchat.proteccion.auto-grammar.bypass"
+# --------------------------------------------------------------------------------------
+
+# Should the first word of every sentence of players' messages be capitalized?
+# Ignores capitalizing short messages such as "xD"
+capitalize: true
+
+# Should a period be added at the end of players' sentences?
+# Ignores appending periods to short messages such as "xD"
+add-periods: true
+
+# Should typos on the below list be fixed with their replacements?
+fix-typos: true
+
+# These words will be corrected to the word after the " -> "
+# Case doesn't matter in the words on the left side
+# If one of the words on the left side is typed in all caps by the player, the right side translation will be converted to uppercase as well
+corrections:
+- "i -> I"
+- "alot -> a lot"
+- "cant -> can't"
+- "wont -> won't"
+- "wouldnt -> wouldn't"
+- "shouldnt -> shouldn't"
+- "couldnt -> couldn't"
+- "youre -> you're"
+- "ill -> I'll"
+- "ive -> I've"
+- "im -> I'm"
+- "id -> I'd"
+- "its -> it's"
+- "doesnt -> doesn't"
+- "dont -> don't"
+- "shes -> she's"
+- "hes -> he's"
+- "theres -> there's"
+- "theyre -> they're"
+
+# IMPORTANT: The below list will only work if the COMMAND context is enabled under auto-grammar in the main config!
+# The below list is which commands the module will apply to. It's recommended to only set these to your private messaging commands.
+# Set the list to "affected-commands: []" to apply the module to ALL commands (highly not recommended!)
+# Make sure to only include base commands; don't add any command arguments. (spaces)
+affected-commands:
+- "/tell"
+- "/t"
+- "/msg"
+- "/w"
+- "/r"
+- "/whisper"
+- "/w"
+- "/pm"

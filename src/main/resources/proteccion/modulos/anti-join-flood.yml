@@ -1,0 +1,23 @@
+# BatmanChat - proteccion/modulos/anti-join-flood.yml
+# (Valores y listas tal como los tenias en ChatSentry. Los comentarios estan en ingles, como el original.)
+# Tambien se acepta el permiso viejo de bypass (chatsentry.*) y el general batmanchat.proteccion.bypass.
+# --------------------------------------------------------------------------------------
+# Anti Join Flood:
+# Prevents more than a defined amount of players joining every minute to prevent bot join flooding to lag, spam, & or crash the server.
+# Bypass permission: "batmanchat.proteccion.anti-join-flood.bypass"
+# --------------------------------------------------------------------------------------
+
+# Make sure you change the value below to what will work best for your server to prevent BatmanChat from blocking players from joining when it shouldn't.
+
+# Below is the limit of joins (including relogs) that will be allowed by the server within 60 seconds
+
+# Recommended settings:
+# Small servers: ~12
+# Medium servers: ~35
+# Big servers: ~100+
+
+allowed-joins-per-minute: 12
+
+# This option disables join flood checking for 2 minutes and 30 seconds after starting to prevent blocking people joining back after the server restarts.
+# Only set this to false if the server is actively being flooded to prevent issues.
+disable-join-flood-check-on-startup: true

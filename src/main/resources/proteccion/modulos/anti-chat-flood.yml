@@ -1,0 +1,48 @@
+# BatmanChat - proteccion/modulos/anti-chat-flood.yml
+# (Valores y listas tal como los tenias en ChatSentry. Los comentarios estan en ingles, como el original.)
+# Tambien se acepta el permiso viejo de bypass (chatsentry.*) y el general batmanchat.proteccion.bypass.
+# --------------------------------------------------------------------------------------
+# Intelligent Anti Chat Flood:
+# Prevents or intelligently modifies the use of excessive repeated characters and very long "words" without interfering with players using 'expressive' chat.
+# Bypass permission: "batmanchat.proteccion.anti-chat-flood.bypass"
+# --------------------------------------------------------------------------------------
+
+# The maximum times the same character can be repeated consecutively.
+# Applies to all characters not on the custom limit list below this option.
+repeated-character-limit: 6
+
+# Since some characters take up less space (like "!") you can optionally allow them to be repeated additional times to reduce interferences with people being extra expressive in chat who aren't attempting to flood it
+# Format: <CHARACTER>;;<REPEAT LIMIT>
+# Set to "custom-limits: []" to have no custom limits
+# Please note that this list is case sensitive
+custom-limits:
+- "!;;30"
+- ".;;35"
+
+# Maximum character length of words (ignores custom limit chars)
+max-word-length: 32
+
+# Should web links longer than the maximum "word" length limit be ignored?
+ignore-long-links: true
+
+# When set to true, the detected message will be intelligently modified instead of blocked entirely
+# The amount of repeated chars to cut off is determined by a division of the initial limit
+# Example: "Heyyyyyyyyyyyyyyy" -> becomes -> "Heyyyyy"
+modify-message: true
+
+# Only applies if modify-message is true. When a message is modified, should the blocked message below be sent as well?
+send-block-message-when-modified: true
+
+# IMPORTANT: The below list will only work if the COMMAND context is enabled under anti-chat-flood in the main config!
+# The below list is which commands the module will apply to. It's recommended to only set these to your private messaging commands.
+# Set the list to "affected-commands: []" to apply the module to ALL commands (highly not recommended!)
+# Make sure to only include base commands; don't add any command arguments. (spaces)
+affected-commands:
+- "/tell"
+- "/t"
+- "/msg"
+- "/w"
+- "/r"
+- "/whisper"
+- "/w"
+- "/pm"

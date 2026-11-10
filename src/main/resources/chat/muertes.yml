@@ -1,0 +1,107 @@
+#=================================================================================================#
+#                    BatmanChat - chat/muertes.yml (mensajes de muerte personalizados)
+#=================================================================================================#
+#
+#  Cambia el mensaje de muerte de Minecraft por uno de estos, segun la causa (como DeluxeCombat).
+#  Cada causa tiene una LISTA de mensajes: se elige uno al azar. Si una causa no esta en la lista
+#  (o esta vacia) se usa DEFAULT. Para dejar el mensaje original de Minecraft en una causa, ponla
+#  con una lista vacia: "CAUSA: []" y quita tambien DEFAULT.
+#
+#  Variables: {victima}, {asesino}, {arma}, {mundo}, {x}, {y}, {z}, {causa}. Tambien PlaceholderAPI (de la victima).
+#  {arma} se muestra como [Item] y al pasar el raton se ve el item con todos sus encantamientos.
+#
+#  Causas especiales:
+#    JUGADOR       lo mato otro jugador (con arma en la mano)
+#    JUGADOR_SIN_ARMA   lo mato otro jugador con las manos vacias
+#    MOB           lo mato un mob (incluye mobs de MythicMobs), {asesino} es su nombre
+#  Causas normales (nombres de DamageCause de Bukkit): FALL, FIRE, FIRE_TICK, LAVA, DROWNING, SUFFOCATION,
+#    VOID, STARVATION, POISON, WITHER, MAGIC, LIGHTNING, BLOCK_EXPLOSION, ENTITY_EXPLOSION, PROJECTILE,
+#    CONTACT, FALLING_BLOCK, FLY_INTO_WALL, FREEZE, HOT_FLOOR, THORNS, DRAGON_BREATH, CRAMMING, SONIC_BOOM,
+#    SUICIDE, CUSTOM, KILL, WORLD_BORDER, MELTING, DRYOUT, ENTITY_ATTACK, ENTITY_SWEEP_ATTACK
+#
+#=================================================================================================#
+
+Enable: true
+
+# Como se ve el arma ({item} es el nombre del item).
+Formato_Arma: "&8[&f{item}&8]"
+# Texto de {arma} cuando el asesino no tiene nada en la mano.
+Arma_Vacia: "&7sus puños"
+
+# Sonido que oyen todos al morir alguien (toggle: false para desactivarlo).
+Sonido:
+  toggle: false
+  value: 'ENTITY_WITHER_DEATH'
+  volume: 0.4
+  pitch: 1.5
+
+Mensajes:
+  JUGADOR:
+    - "&8[&c☠&8] &c{victima} &7fue asesinado por &a{asesino} &7usando {arma}"
+    - "&8[&c☠&8] &a{asesino} &7elimino a &c{victima} &7con {arma}"
+    - "&8[&c☠&8] &c{victima} &7cayo ante &a{asesino} &7y su {arma}"
+  JUGADOR_SIN_ARMA:
+    - "&8[&c☠&8] &a{asesino} &7destrozo a &c{victima} &7con {arma}"
+    - "&8[&c☠&8] &c{victima} &7perdio una pelea a punos contra &a{asesino}"
+  MOB:
+    - "&8[&c☠&8] &c{victima} &7fue asesinado por &e{asesino}"
+    - "&8[&c☠&8] &e{asesino} &7acabo con &c{victima}"
+  PROJECTILE:
+    - "&8[&c☠&8] &c{victima} &7murio por un proyectil"
+    - "&8[&c☠&8] &c{victima} &7recibio una flecha en la rodilla"
+  FALL:
+    - "&8[&c☠&8] &c{victima} &7no calculo bien la caida"
+    - "&8[&c☠&8] &c{victima} &7se estrello contra el suelo"
+  FIRE:
+    - "&8[&c☠&8] &c{victima} &7se quemo vivo"
+  FIRE_TICK:
+    - "&8[&c☠&8] &c{victima} &7se consumio entre las llamas"
+  LAVA:
+    - "&8[&c☠&8] &c{victima} &7se bano en lava"
+    - "&8[&c☠&8] &c{victima} &7intento nadar en lava"
+  DROWNING:
+    - "&8[&c☠&8] &c{victima} &7se ahogo"
+  SUFFOCATION:
+    - "&8[&c☠&8] &c{victima} &7murio asfixiado dentro de un bloque"
+  VOID:
+    - "&8[&c☠&8] &c{victima} &7cayo al vacio"
+    - "&8[&c☠&8] &c{victima} &7se perdio en el vacio"
+  STARVATION:
+    - "&8[&c☠&8] &c{victima} &7murio de hambre"
+  POISON:
+    - "&8[&c☠&8] &c{victima} &7murio envenenado"
+  WITHER:
+    - "&8[&c☠&8] &c{victima} &7se marchito"
+  MAGIC:
+    - "&8[&c☠&8] &c{victima} &7fue victima de la magia"
+  LIGHTNING:
+    - "&8[&c☠&8] &c{victima} &7fue alcanzado por un rayo"
+  BLOCK_EXPLOSION:
+    - "&8[&c☠&8] &c{victima} &7exploto en mil pedazos"
+  ENTITY_EXPLOSION:
+    - "&8[&c☠&8] &c{victima} &7salto por los aires"
+  CONTACT:
+    - "&8[&c☠&8] &c{victima} &7murio pinchado"
+  FALLING_BLOCK:
+    - "&8[&c☠&8] &c{victima} &7fue aplastado por un bloque"
+  FLY_INTO_WALL:
+    - "&8[&c☠&8] &c{victima} &7volo directo contra una pared"
+  FREEZE:
+    - "&8[&c☠&8] &c{victima} &7murio congelado"
+  HOT_FLOOR:
+    - "&8[&c☠&8] &c{victima} &7descubrio que el suelo era lava"
+  THORNS:
+    - "&8[&c☠&8] &c{victima} &7murio por las espinas"
+  DRAGON_BREATH:
+    - "&8[&c☠&8] &c{victima} &7fue calcinado por el aliento del dragon"
+  CRAMMING:
+    - "&8[&c☠&8] &c{victima} &7murio aplastado por la multitud"
+  SONIC_BOOM:
+    - "&8[&c☠&8] &c{victima} &7fue destruido por un rugido sonico"
+  SUICIDE:
+    - "&8[&c☠&8] &c{victima} &7se quito la vida"
+  WORLD_BORDER:
+    - "&8[&c☠&8] &c{victima} &7murio fuera de los limites del mundo"
+  DEFAULT:
+    - "&8[&c☠&8] &c{victima} &7ha muerto"
+    - "&8[&c☠&8] &c{victima} &7no lo logro"

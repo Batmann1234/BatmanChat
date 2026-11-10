@@ -1,0 +1,38 @@
+# BatmanChat - proteccion/modulos/cap-limiter.yml
+# (Valores y listas tal como los tenias en ChatSentry. Los comentarios estan en ingles, como el original.)
+# Tambien se acepta el permiso viejo de bypass (chatsentry.*) y el general batmanchat.proteccion.bypass.
+# --------------------------------------------------------------------------------------
+# Intelligent Cap Limiter:
+# Limits the use of excessive capital letters in messages without interference of messages using proper grammar. Can auto-set the message to lowercase or blocks it entirely. Player names are ignored.
+# Bypass permission: "batmanchat.proteccion.cap-limiter.bypass"
+# --------------------------------------------------------------------------------------
+
+# Below is the number of capital letters players will be allowed write in a row
+# Player names will be ignored
+repeated-cap-limit: 8
+
+# Below is the maximum amount of capital letters messages can contain before being blocked by the filter. To avoid problems, be mindful of players writing with proper capitalization in longer messages by not setting this value lower than about 15.
+master-cap-limit: 18
+
+# When set to true, the processed message has color tokens removed first. HEX in particular can add a lot of caps to messages that aren't actually seen since they are colorized. You should probably leave this set to true.
+ignore-colorcodes: true
+
+# When set to true, the messages caps will be replaced with lowercase letters and sent. When set to false the detected message will be blocked entirely.
+modify-message: true
+
+# Only applies if modify-message is true. When a message is modified, should the blocked message below be sent as well?
+send-block-message-when-modified: true
+
+# IMPORTANT: The below list will only work if the COMMAND context is enabled under cap-limiter in the main config!
+# The below list is which commands the module will apply to. It's recommended to only set these to your private messaging commands.
+# Set the list to "affected-commands: []" to apply the module to ALL commands (highly not recommended!)
+# Make sure to only include base commands; don't add any command arguments. (spaces)
+affected-commands:
+- "/tell"
+- "/t"
+- "/msg"
+- "/w"
+- "/r"
+- "/whisper"
+- "/w"
+- "/pm"

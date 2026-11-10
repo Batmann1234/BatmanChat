@@ -1,0 +1,16 @@
+# BatmanChat - proteccion/modulos/anti-relog-spam.yml
+# (Valores y listas tal como los tenias en ChatSentry. Los comentarios estan en ingles, como el original.)
+# Tambien se acepta el permiso viejo de bypass (chatsentry.*) y el general batmanchat.proteccion.bypass.
+# --------------------------------------------------------------------------------------
+# Anti Relog Spam
+# Prevents players excessively relogging in short periods of time to flood chat. Uses a dynamically increasing cooldown to effectively combat excessive relogging without affecting players who are relogging reasonably.
+# Bypass permission: "batmanchat.proteccion.anti-relog-spam.bypass"
+# --------------------------------------------------------------------------------------
+
+# HIGHLY RECOMMENDED TO KEEP ENABLED ! Disabling signifcantly lowers the effectiveness of this module
+# Increases the time the player will have to wait before joining again every attempted relog during the cooldown
+use-dynamically-increasing-cooldown: false
+
+# Join cooldown in seconds after relogging for a 2nd time in the same period of time
+# Only applies when not using dynamically increasing cooldown
+cooldown: 15

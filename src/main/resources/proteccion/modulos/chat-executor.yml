@@ -1,0 +1,101 @@
+# BatmanChat - proteccion/modulos/chat-executor.yml
+# (Valores y listas tal como los tenias en ChatSentry. Los comentarios estan en ingles, como el original.)
+# Tambien se acepta el permiso viejo de bypass (chatsentry.*) y el general batmanchat.proteccion.bypass.
+# --------------------------------------------------------------------------------------
+# Intelligent Chat Executor:
+# Modifies and or performs actions triggered by defined messages/commands using simple or complex matching techniques. Optionally supports execution of sign text and anvil renames.
+# Bypass permission: "batmanchat.proteccion.chat-executor.bypass"
+# --------------------------------------------------------------------------------------
+
+# Entry guide:
+
+# You can prefix 'match:' nodes with:
+# "{only_commands}" to only run the match on commands
+# "{only_chat}" to only run the match on chat
+# "{only_anvils}" to run the entry on anvil renames (if the anvil listener is enabled in config.yml)
+# "{only_signs}" to run the entry on sign text (if the sign listener is enabled in config.yml)
+#  If you use neither only_chat or only_commands it will match both chat and commands. When using only_anvils or only_signs the entry will solely execute on anvils or signs
+# You can also add the below:
+# "{text}" to specify that the match is just plain text and is not regex
+# "{regex}" to specify that the match is using regex
+# If you use neither, plain text will be defaulted to
+
+# On regex matches, make sure you escape any regex symbols you want there as regular text by adding a "\" to the start of any of these: <([{^\-=$!|]})?*+.>
+
+# Under 'set-as:' nodes you can:
+# Use "{dont_modify}" to not modify the message at all.
+# Use "{block}" to block the message entirely.
+# Use "{dont_notify}" to not send any admin notifier message when matched (if admin notifications are enabled for the Chat Executor)
+# Use "{dont_log}" to not log anything the when the entry is triggered (if logging is enabled for the Chat Executor)
+# These are stackable, ex. "{block}{dont_modify}{dont_log}" however, {dont_modify} and {block} must not be in the same set-as node as they conflict.
+
+# Under 'execute:' action lists you can:
+# Use the format "{player_msg}: message" to send a message to the player.
+# Use the format "{console_cmd}: command" to run a command as the console.
+# Use the format "{player_cmd}: command" to run a command as the player.
+# Use the format "{broadcast}: message" to broadcast a message to all players.
+
+# With network mode enabled in config.yml, you can:
+# Use the format "{proxy_console_cmd}: command" to run a command as the proxy console.
+# Use the format "{proxy_player_cmd}: command" to run a command as the player from the proxy.
+
+# To use parts of the players message in execute actions, you can use:
+# "{arg<number>}" to get the word/argument of the players message (starting from 0): ex "{arg1}" in "FirstWord SecondWord ThirdWord" is "FirstWord", "{arg2}" is "SecondWord", etc.
+# "{multiargs<number>}" to get all the arguments/words after a particular argument/word. Ex "{multiargs2}" of "FirstWord SecondWord ThirdWord FourthWord" is "ThirdWord FourthWord"
+# You can use multiple {arg<number>} and {multiarg<number>} placeholders in actions. If the requested argument/word is not present, it will simply be blank.
+
+# Set to "execute: []" to execute no actions.
+
+# To get the players username or displayname in actions, you can use:
+# "{PLAYER}" to get the players username.
+# "{PLAYER_DISPLAYNAME}" to get the players display name with its original colors
+# "{PLAYER_DISPLAYNAME_STRIPPED}" to get the players display name stripped of its original colors
+
+# Note that entries are processed in the order they are listed below. If multiple entries match a message, only the first one will be used
+# Also note that character case in all matches is ignored
+
+entries:
+  1:
+    match: '{regex}(can i apply for|give me|i would like|can i have|could i have|i wanna be|i want|i want to be|i wanna apply for|can i|i want to|i wanna) (admin|staff|op|operator|mod|moderator|owner|co owner|coowner|apply)'
+    set-matches-as: '{block}'
+    execute:
+    - "{player_msg}: &eSorry, staff applications are not open at this time."
+    - "{player_msg}: &eWe will let the community know when we're looking again!"
+  2:
+    match: '{regex}this server (sucks|is lame|is trash|is boring|is not good|isn''t good)'
+    set-matches-as: I love this server :D
+    execute: []
+  3:
+    match: '{regex}{only_commands}^(/plugins|/pl)$'
+    set-matches-as: '{block}'
+    execute:
+    - "{player_msg}: &fPlugins (1): &aNone of your business >:D"
+  4:
+    match: '{regex}{only_chat}(is there a|what is the|whats the|can i have the|could i have the) (discord|discord server|discord link)'
+    set-matches-as: '{dont_modify}{dont_notify}{dont_log}'
+    execute:
+    - "{broadcast}: &d{PLAYER}, the Discord server can be joined here: &fdiscord.gg/exampleLink"
+  5:
+    match: '{regex}^only match this whole message excluding character case$'
+    set-matches-as: '{block}{dont_notify}{dont_log}'
+    execute:
+    - "{player_msg}: Congrats, your whole message was 'only match this whole message excluding character case'!"
+  6:
+    match: '{text}{only_chat}repeat me:'
+    set-matches-as: '{dont_modify}{dont_notify}{dont_log}'
+    execute:
+    - "{broadcast}: You typed: '{multiargs2}'"
+  7:
+    match: '{text}{only_chat}repeat only the first word I type:'
+    set-matches-as: '{dont_modify}{dont_notify}{dont_log}'
+    execute:
+    - "{broadcast}: The first word after 'repeat only the first word I type:' was: '{arg8}'"
+  8:
+    match: '{text}{only_chat}repeat only the first and second word I type:'
+    set-matches-as: '{dont_modify}{dont_notify}{dont_log}'
+    execute:
+    - "{broadcast}: The first word: '{arg10}', the second word: '{arg11}'"
+  9:
+    match: '{text}{only_signs}Text to replace on a sign'
+    set-matches-as: Replaced text on a sign!
+    execute: []

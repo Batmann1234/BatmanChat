@@ -1,0 +1,18 @@
+#=================================================================================================#
+#                     BatmanChat - anuncios/config.yml (ajustes de los anuncios)
+#=================================================================================================#
+#
+#  Reemplaza al config.yml de InfiniteAnnouncements.
+#  Los anuncios estan en anuncios/anuncios.yml y los placeholders propios en anuncios/placeholders.yml.
+#
+#=================================================================================================#
+
+announcement:
+  # true  = se envia UN anuncio cada "interval" segundos, rotando por la lista (o al azar si random: true).
+  #         En este modo se ignora el "interval" de cada anuncio.
+  # false = cada anuncio usa su propio "interval" (segundos) de anuncios/anuncios.yml.
+  enable: true
+  # Mostrar los anuncios en orden aleatorio? (solo con enable: true)
+  random: false
+  # Segundos entre cada anuncio (solo con enable: true).
+  interval: 180

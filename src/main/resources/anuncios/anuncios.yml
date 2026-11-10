@@ -1,0 +1,206 @@
+#=================================================================================================#
+#                       BatmanChat - anuncios/anuncios.yml (anuncios automaticos)
+#=================================================================================================#
+#
+#  Reemplaza al archivo announcements.yml de InfiniteAnnouncements (mismo formato).
+#  Colores: &a, HEX con #RRGGBB o &#RRGGBB, degradados <gradient:#FF0000:#0000FF>texto</gradient>.
+#  Centrar una linea: <center>texto</center>.
+#  PlaceholderAPI (%player_name%) y placeholders propios (%%discord%%, ver anuncios/placeholders.yml).
+#  Para usar los intervalos de cada anuncio pon announcement.enable: false en anuncios/config.yml.
+#
+#=================================================================================================#
+
+Announcements:
+  1:
+    # Intervalo en segundos (solo se usa si announcement.enable es false en anuncios/config.yml).
+    interval: 30
+    # Sonido al mostrar el anuncio (nombre del sonido, ej: ENTITY_EXPERIENCE_ORB_PICKUP). Vacio o none = sin sonido.
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    # Mundos donde se muestra el anuncio. Lista vacia ([]) = todos los mundos.
+    worlds: []
+    # Solo lo ven jugadores con este permiso. null = todos.
+    permission: null
+    # Tipo de anuncio: CHAT, ACTIONBAR, BOSSBAR o TITLE.
+    type: CHAT
+    # Configuracion de la bossbar (solo para type: BOSSBAR).
+    bossbar:
+      # Color: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW.
+      color: RED
+      # Estilo: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20.
+      style: PROGRESS
+      # Progreso de la barra (0.0 - 1.0).
+      progress: 1.0
+      # Segundos que se muestra (1 - 60).
+      time: 5
+    # Contenido. CHAT: todas las lineas. ACTIONBAR/BOSSBAR: primera linea no vacia. TITLE: linea 1 titulo, linea 2 subtitulo.
+    lines:
+      - ""
+      - "<center>&#94FF00&lTIENDA DEL SERVIDOR</center>"
+      - ""
+      - "<center>&fCompra en nuestra tienda &#94FF00Rangos &fo</center>"
+      - "<center>&#94FF00items unicos. &fObten el tuyo ahora </center>"
+      - ""
+      - "<center>&#94FF00→&#94FF00 /ᴛɪᴇɴᴅᴀ &#94FF00←</center>"
+      - ""
+  2:
+    # Intervalo en segundos (solo se usa si announcement.enable es false en anuncios/config.yml).
+    interval: 60
+    # Sonido al mostrar el anuncio (nombre del sonido, ej: ENTITY_EXPERIENCE_ORB_PICKUP). Vacio o none = sin sonido.
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    # Volumen del sonido.
+    volume: 1
+    # Tono del sonido.
+    pitch: 1
+    # Mundos donde se muestra el anuncio. Lista vacia ([]) = todos los mundos.
+    worlds: []
+    # Solo lo ven jugadores con este permiso. null = todos.
+    permission: null
+    # Tipo de anuncio: CHAT, ACTIONBAR, BOSSBAR o TITLE.
+    type: CHAT
+    # Configuracion de la bossbar (solo para type: BOSSBAR).
+    bossbar:
+      # Color: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW.
+      color: RED
+      # Estilo: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20.
+      style: PROGRESS
+      # Progreso de la barra (0.0 - 1.0).
+      progress: 1.0
+      # Segundos que se muestra (1 - 60).
+      time: 5
+    # Contenido. CHAT: todas las lineas. ACTIONBAR/BOSSBAR: primera linea no vacia. TITLE: linea 1 titulo, linea 2 subtitulo.
+    lines:
+      - ""
+      - "<center>&#5865F2&lSERVIDOR DE DISCORD</center>"
+      - ""
+      - "<center>&fUnete a nuesto canal de discord</center>"
+      - "<center>&#5865F2Para no perderte eventos&f</center>"
+      - ""
+      - "<center>&#5865F2→ /ᴅɪsᴄᴏʀᴅ &#5865F2 ←</center>"
+      - ""
+  3:
+    # Intervalo en segundos (solo se usa si announcement.enable es false en anuncios/config.yml).
+    interval: 120
+    # Sonido al mostrar el anuncio (nombre del sonido, ej: ENTITY_EXPERIENCE_ORB_PICKUP). Vacio o none = sin sonido.
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    # Mundos donde se muestra el anuncio. Lista vacia ([]) = todos los mundos.
+    worlds: []
+    # Solo lo ven jugadores con este permiso. null = todos.
+    permission: null
+    # Tipo de anuncio: CHAT, ACTIONBAR, BOSSBAR o TITLE.
+    type: CHAT
+    # Configuracion de la bossbar (solo para type: BOSSBAR).
+    bossbar:
+      # Color: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW.
+      color: RED
+      # Estilo: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20.
+      style: PROGRESS
+      # Progreso de la barra (0.0 - 1.0).
+      progress: 1.0
+      # Segundos que se muestra (1 - 60).
+      time: 5
+    # Contenido. CHAT: todas las lineas. ACTIONBAR/BOSSBAR: primera linea no vacia. TITLE: linea 1 titulo, linea 2 subtitulo.
+    lines:
+      - ""
+      - "<center>&#FF0000&lREGLAS DEL SERVIDOR</center>"
+      - ""
+      - "<center>&fInvestiga sobre las reglas del servidor para evitar&f.</center>"
+      - "<center>&#FF0000ser sancionado en un futuro&f!</center>"
+      - ""
+      - "<center>&#FF0000→ /ʀᴇɢʟᴀs &#FF0000←</center>"
+      - ""
+
+  4:
+    # Intervalo en segundos (solo se usa si announcement.enable es false en anuncios/config.yml).
+    interval: 240
+    # Sonido al mostrar el anuncio (nombre del sonido, ej: ENTITY_EXPERIENCE_ORB_PICKUP). Vacio o none = sin sonido.
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    # Mundos donde se muestra el anuncio. Lista vacia ([]) = todos los mundos.
+    worlds: []
+    # Solo lo ven jugadores con este permiso. null = todos.
+    permission: null
+    # Tipo de anuncio: CHAT, ACTIONBAR, BOSSBAR o TITLE.
+    type: CHAT
+    # Configuracion de la bossbar (solo para type: BOSSBAR).
+    bossbar:
+      # Color: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW.
+      color: GREEN
+      # Estilo: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20.
+      style: PROGRESS
+      # Progreso de la barra (0.0 - 1.0).
+      progress: 1.0
+      # Segundos que se muestra (1 - 60).
+      time: 5
+    # Contenido. CHAT: todas las lineas. ACTIONBAR/BOSSBAR: primera linea no vacia. TITLE: linea 1 titulo, linea 2 subtitulo.
+    lines:
+      - ""
+      - "<center>&#00FF3B&lVOTA POR EL SERVIDOR</center>"
+      - ""
+      - "<center>&fObten recompensas variadas por&f</center>"
+      - "<center>&#00FF3Bapoyar levemente al servidor&f!</center>"
+      - ""
+      - "<center>&#00FF3B→ /ᴠᴏᴛᴇ &#00FF3B←</center>"
+      - ""
+
+  5:
+    # Intervalo en segundos (solo se usa si announcement.enable es false en anuncios/config.yml).
+    interval: 480
+    # Sonido al mostrar el anuncio (nombre del sonido, ej: ENTITY_EXPERIENCE_ORB_PICKUP). Vacio o none = sin sonido.
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    # Mundos donde se muestra el anuncio. Lista vacia ([]) = todos los mundos.
+    worlds: []
+    # Solo lo ven jugadores con este permiso. null = todos.
+    permission: null
+    # Tipo de anuncio: CHAT, ACTIONBAR, BOSSBAR o TITLE.
+    type: CHAT
+    # Configuracion de la bossbar (solo para type: BOSSBAR).
+    bossbar:
+      # Color: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW.
+      color: GREEN
+      # Estilo: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20.
+      style: PROGRESS
+      # Progreso de la barra (0.0 - 1.0).
+      progress: 1.0
+      # Segundos que se muestra (1 - 60).
+      time: 5
+    # Contenido. CHAT: todas las lineas. ACTIONBAR/BOSSBAR: primera linea no vacia. TITLE: linea 1 titulo, linea 2 subtitulo.
+    lines:
+      - ""
+      - "<center>&#FFEE00&lINFORMATE SOBRE EL SERVIDOR</center>"
+      - ""
+      - "<center>&fObten informacion valiosa del&f</center>"
+      - "<center>&#FFEE00servidor en un menu interactivo&f!</center>"
+      - ""
+      - "<center>&#FFEE00→ /ᴍᴇɴᴜ &#FFEE00←</center>"
+      - ""
+
+  6:
+    # Intervalo en segundos (solo se usa si announcement.enable es false en anuncios/config.yml).
+    interval: 920
+    # Sonido al mostrar el anuncio (nombre del sonido, ej: ENTITY_EXPERIENCE_ORB_PICKUP). Vacio o none = sin sonido.
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    # Mundos donde se muestra el anuncio. Lista vacia ([]) = todos los mundos.
+    worlds: []
+    # Solo lo ven jugadores con este permiso. null = todos.
+    permission: null
+    # Tipo de anuncio: CHAT, ACTIONBAR, BOSSBAR o TITLE.
+    type: CHAT
+    # Configuracion de la bossbar (solo para type: BOSSBAR).
+    bossbar:
+      # Color: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW.
+      color: BLUE
+      # Estilo: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20.
+      style: PROGRESS
+      # Progreso de la barra (0.0 - 1.0).
+      progress: 1.0
+      # Segundos que se muestra (1 - 60).
+      time: 5
+    # Contenido. CHAT: todas las lineas. ACTIONBAR/BOSSBAR: primera linea no vacia. TITLE: linea 1 titulo, linea 2 subtitulo.
+    lines:
+      - ""
+      - "<center>&#001CFF&lMENU DE ARREGLOS</center>"
+      - ""
+      - "<center>&fRecuerdate arreglar todos items en el&f</center>"
+      - "<center>&#001CFFmenu de el spawn&f!</center>"
+      - ""
+      - "<center>&#001CFF→ /ᴀʀʀᴇɢʟᴏ &#001CFF←</center>"
+      - ""

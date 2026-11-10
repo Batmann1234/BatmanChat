@@ -1,0 +1,148 @@
+#=================================================================================================#
+#        BatmanChat - servidor/entradas-salidas.yml (primera entrada, entrada/salida y MOTD)
+#=================================================================================================#
+#
+#  Misma estructura que la seccion Messages y MOTD del config.yml de ChatManager.
+#
+#  Variables: {player}, {server_name} y cualquier placeholder de PlaceholderAPI (%luckperms_prefix%...).
+#  Colores: &a, HEX con #RRGGBB, degradados <gradient:#FF0000:#0000FF>texto</gradient>.
+#
+#  1. Primera entrada (First_Join): se muestra a los jugadores que entran por primera vez.
+#     Cada seccion se activa o desactiva por separado y NO es por grupo.
+#  2. Mensajes por defecto (Join_Message, Quit_Message...): se activan si NO quieres mensajes por
+#     grupo. Se envian a quien no tenga el permiso de ningun grupo de Group_Messages.
+#  3. Mensajes por grupo (Group_Messages): el jugador recibe los del grupo cuyo permiso tenga.
+#     - Los nombres de grupo pueden ser cualquiera; el Permission debe ser el que das en LuckPerms.
+#     - Puedes borrar las secciones que no uses (Join_Message, Quit_Message, Actionbar, Title).
+#     - Para que el titulo funcione hacen falta Header y Footer.
+#     - Fade_In, Stay y Fade_Out del titulo se configuran en la seccion Title_Message de arriba.
+#     - Sound se envia a todos los jugadores al entrar y al salir. Ponlo en '' o toggle: false para quitarlo.
+#     - Si un jugador es OP (o tiene varios permisos de grupo) recibe los mensajes del ULTIMO grupo de la lista.
+#  4. Ocultar_Mensajes_Vanish: si el jugador esta en vanish no se muestran sus mensajes de entrada/salida.
+#
+#=================================================================================================#
+
+# Nombre del servidor para la variable {server_name}.
+Server_Name: "Valterion"
+
+# Ocultar los mensajes de entrada/salida de los jugadores en vanish (Essentials, SuperVanish, PremiumVanish).
+Ocultar_Mensajes_Vanish: true
+
+Messages:
+  # Si el mensaje de entrada por defecto debe quitarse y enviarse un tick despues como broadcast.
+  # Util si algunos placeholders no estan cargados justo al entrar (por ejemplo el plugin TAB).
+  Async: false
+
+  First_Join:
+    Welcome_Message:
+      Enable: false
+      # Sonido que se envia a todos en el servidor. toggle: false para desactivarlo.
+      sound:
+        toggle: false
+        value: 'ENTITY_PLAYER_LEVELUP'
+        pitch: 1.0
+        volume: 1.0
+      First_Join_Message: "#03FF00&lVALTERION &8&l| &7Denle la bienvenida a #03FF00{player} #03FF00[&f%server_unique_joins%#03FF00]"
+
+    Actionbar_Message:
+      Enable: false
+      First_Join_Message: "&eBienvenido a &b{server_name} %luckperms_prefix% {player}&e!"
+
+    Title_Message:
+      Enable: false
+      # Ticks que tarda el titulo en aparecer.
+      Fade_In: 40
+      # Ticks que el titulo se queda en pantalla.
+      Stay: 20
+      # Ticks que tarda en desaparecer.
+      Fade_Out: 40
+      First_Join_Message:
+        Header: "&eBienvenido"
+        Footer: "&b{player} a {server_name}"
+
+  Join_Quit_Messages:
+    Join_Message:
+      # Deja en false si usas mensajes por grupo.
+      # Activalo si no quieres usar mensajes por grupo.
+      # Se envian a quien no tenga el permiso de ningun grupo. Lo mismo aplica a Quit, Actionbar y Title.
+      Enable: false
+      sound:
+        toggle: false
+        value: 'ENTITY_PLAYER_LEVELUP'
+        pitch: 1.0
+        volume: 1.0
+      Message: "&8[#00FF3F+&8]&f {player}"
+
+    Quit_Message:
+      Enable: false
+      sound:
+        toggle: false
+        value: 'ENTITY_PLAYER_LEVELUP'
+        pitch: 1.0
+        volume: 1.0
+      Message: "&8[#FF4848-&8]&f {player}"
+
+    Actionbar_Message:
+      Enable: false
+      Message: "&eBienvenido de vuelta a &b{server_name} %luckperms_prefix% {player}&e!"
+
+    Title_Message:
+      Enable: false
+      # Fade_In, Stay y Fade_Out se aplican a todos los titulos (por defecto y por grupo).
+      Fade_In: 40
+      Stay: 20
+      Fade_Out: 40
+      Message:
+        Header: "&eBienvenido de vuelta"
+        Footer: "&b{player} a {server_name}"
+
+    # Mensajes por grupo. Puedes anadir todas las secciones que quieras.
+    Group_Messages:
+      Enable: true
+      # Nombre del grupo (puede ser cualquiera).
+      Default:
+        # Permiso que se le da al grupo para que reciba estos mensajes.
+        Permission: "chatmanager.join.staff"
+        Join_Message: ""
+        Quit_Message: ""
+        # Mensaje de actionbar que reciben al entrar.
+        Actionbar: ""
+        # Titulo que reciben al entrar.
+        Title:
+          Header: ""
+          Footer: ""
+        sound:
+          toggle: false
+          value: 'ENTITY_PLAYER_LEVELUP'
+          pitch: 1.0
+          volume: 1.0
+
+      Donator:
+        Permission: "chatmanager.join.default"
+        Join_Message: "&8[#00FF3F+&8]&f {player}"
+        Quit_Message: ""
+        Actionbar: ""
+        Title:
+          Header: ""
+          Footer: ""
+        sound:
+          toggle: false
+          value: 'ENTITY_PLAYER_LEVELUP'
+          pitch: 1.0
+          volume: 1.0
+
+#=================================================================================================#
+# MOTD: mensaje de bienvenida al entrar.
+#=================================================================================================#
+MOTD:
+  Enable: false
+  # Segundos de espera antes de mostrarlo despues de entrar.
+  Delay: 2
+  Message:
+    - "&7&m------------------------------------"
+    - "#03FF00Bienvenido al servidor &b{player}#03FF00!"
+    - ""
+    - "#03FF00Si necesitas ayuda escribe a cualquier miembro del staff conectado."
+    - ""
+    - "#03FF00Puedes cambiar este mensaje en servidor/entradas-salidas.yml"
+    - "&7&m------------------------------------"

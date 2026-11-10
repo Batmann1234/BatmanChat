@@ -1,0 +1,32 @@
+# BatmanChat - proteccion/modulos/chat-cooldown.yml
+# (Valores y listas tal como los tenias en ChatSentry. Los comentarios estan en ingles, como el original.)
+# Tambien se acepta el permiso viejo de bypass (chatsentry.*) y el general batmanchat.proteccion.bypass.
+# --------------------------------------------------------------------------------------
+# Intelligent Chat Cooldown:
+# Controls how quickly players can send messages and configured or all commands within a defined time frame.
+# Bypass permission: "batmanchat.proteccion.chat-cooldown.bypass"
+# --------------------------------------------------------------------------------------
+
+# Below is the duration of time the options below this option will apply to
+# 20 ticks = 1 second
+chat-cooldown-in-ticks: 160
+
+# How many messages can players send every chat-cooldown-in-ticks amount of time?
+allowed-message-sends-per-cooldown: 4
+
+# How many commands on the below affected-commands list can players send every chat-cooldown-in-ticks amount of time?
+allowed-affected-command-runs-per-cooldown: 6
+
+# IMPORTANT: The below list will only work if the COMMAND context is enabled under chat-cooldown in the main config!
+# The below list is which commands the module will apply to. It's recommended to only set these to your private messaging commands.
+# Set the list to "affected-commands: []" to apply the module to ALL commands (highly not recommended!)
+# Make sure to only include base commands; don't add any command arguments. (spaces)
+affected-commands:
+- "/tell"
+- "/t"
+- "/msg"
+- "/w"
+- "/r"
+- "/whisper"
+- "/w"
+- "/pm"

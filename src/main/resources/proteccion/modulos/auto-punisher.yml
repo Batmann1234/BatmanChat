@@ -1,0 +1,199 @@
+# --------------------------------------------------------------------------------------
+# Auto castigos (Auto Punisher):
+# Ejecuta comandos de castigo automaticamente a los jugadores que activan modulos de proteccion
+# demasiadas veces. Se activa/desactiva en proteccion/config.yml (auto-punisher.enabled).
+# Los ops o jugadores con "batmanchat.proteccion.autopunisher.exempt" no reciben advertencias AUTOMATICAS.
+# --------------------------------------------------------------------------------------
+
+# Acciones disponibles en cada castigo:
+#   "{player_msg}: mensaje"   envia un mensaje al jugador
+#   "{console_cmd}: comando"  ejecuta un comando como consola
+#   "{player_cmd}: comando"   ejecuta un comando como el jugador
+#   "{broadcast}: mensaje"    envia un mensaje a todos los jugadores
+# Variables dentro de las acciones:
+#   {PLAYER}                      nombre de usuario
+#   {PLAYER_DISPLAYNAME}          nombre mostrado con sus colores
+#   {PLAYER_DISPLAYNAME_STRIPPED} nombre mostrado sin colores
+#   {CURRENT_WARNS}               advertencias actuales del jugador en ese modulo
+#   {MAX_WARNS}                   maximo de advertencias del modulo (el numero de castigo mas alto)
+#   {CONTENT}                     mensaje completo que activo el modulo
+#
+# "enabled: true/false" decide si se agrega una advertencia al jugador que activa el modulo.
+# Necesitas un plugin que maneje los comandos de castigo (mute, tempban, warn...): Essentials, AdvancedBan o LiteBans.
+# Si la advertencia llega a un numero que no esta en la lista no se ejecuta nada; el ultimo castigo suele limpiar
+# las advertencias con cswarnings clearmodulewarnings para que no sigan subiendo sin castigo.
+
+# En horas: cada cuanto expira UNA advertencia (en cada modulo) de los jugadores.
+# Pon -1 para que las advertencias nunca expiren automaticamente.
+warning-lifetime: 12
+
+# En horas: cada cuanto (despues de iniciar) se revisan las advertencias expiradas. Dejalo en 1 salvo lag.
+# Tambien se revisan siempre al iniciar el servidor.
+check-expiry-interval: 12
+
+# Enviar un mensaje a la consola cuando se advierte a un jugador, expira una advertencia o se ejecuta un castigo.
+verbose-from-console: true
+
+# Oculta los mensajes de perdon al jugador cuando los activa la consola (para que no vea cuando se reinician
+# sus advertencias con el ultimo castigo de un modulo).
+suppress-pardons-from-console: true
+
+# Enviar un anuncio a todos cuando se advierte manualmente a un jugador con /cswarn
+# (el anuncio se cambia en proteccion/lang.yml: warned-broadcast-message).
+broadcast-manual-warnings: true
+
+# Modulos que soportan advertencias: chat-cooldown, link-and-ad-blocker, word-and-phrase-filter, chat-executor,
+# unicode-remover, cap-limiter, anti-parrot, anti-chat-flood y anti-statue-spambot.
+# "manual" son las advertencias que se aplican a mano con /cswarn <jugador>.
+#
+# Comandos utiles:
+#   /cswarnings clearmodulewarnings <jugador> <modulo|all>   borra las advertencias de un modulo
+#   /cswarnings pardonallmanual <jugador>                    borra las advertencias manuales
+
+warning-config:
+  manual:
+    enabled: true
+    punishments:
+      1:
+      - "{player_msg}: &r"
+      - "{player_msg}: &e&lAVISO VERBAL &7» &fEstás recibiendo un aviso verbal. Por favor revisa las &6/reglas &fdel servidor."
+      - "{player_msg}: &r"
+      2:
+      - "{console_cmd}: warn {PLAYER} Modera tu conducta"
+      3:
+      - "{console_cmd}: warn {PLAYER} Última advertencia; si vuelves a ser advertido serás sancionado"
+      4:
+      - "{console_cmd}: mute {PLAYER} 3h Mala conducta; advertido cuatro veces"
+      - "{player_msg}: &r"
+      - "{player_msg}: &cSi vuelves a ser advertido en las próximas horas serás baneado. Revisa las &4/reglas &cpara asegurarte de cumplirlas."
+      - "{player_msg}: &r"
+      5:
+      - "{console_cmd}: tempban {PLAYER} 2d Mala conducta; advertido cinco veces"
+      - "{console_cmd}: cswarnings pardonallmanual {PLAYER}"
+  link-and-ad-blocker:
+    enabled: true
+    punishments:
+      1:
+      - "{player_msg}: &r"
+      - "{player_msg}: &e&lAVISO VERBAL &7» &fEvita enviar links/ips no permitidos en el chat."
+      - "{player_msg}: &r"
+      2:
+      - "{console_cmd}: warn {PLAYER} Envío de links/ips no permitidos en el chat"
+      3:
+      - "{console_cmd}: warn {PLAYER} Envío de links/ips no permitidos en el chat (última advertencia)"
+      4:
+      - "{console_cmd}: mute {PLAYER} 6h [AUTOMUTE] Intentos excesivos de enviar links/ips no permitidos en el chat."
+      5:
+      - "{console_cmd}: tempban {PLAYER} 5d [AUTOBAN] Intentos excesivos de enviar links/ips no permitidos en el chat"
+      - "{console_cmd}: cswarnings clearmodulewarnings {PLAYER} link-and-ad-blocker"
+  word-and-phrase-filter:
+    enabled: true
+    punishments:
+      1:
+      - "{player_msg}: &r"
+      - "{player_msg}: &e&lAVISO VERBAL &7» &fEvita escribir contenido no permitido en el chat."
+      - "{player_msg}: &r"
+      2:
+      - "{console_cmd}: warn {PLAYER} Lenguaje no permitido en el chat"
+      3:
+      - "{console_cmd}: warn {PLAYER} Lenguaje no permitido en el chat (última advertencia)"
+      5:
+      - "{console_cmd}: mute {PLAYER} 1h [AUTOMUTE] Intentos excesivos de lenguaje explícito"
+      6:
+      - "{console_cmd}: mute {PLAYER} 6h [AUTOMUTE] Intentos excesivos de lenguaje explícito"
+      7:
+      - "{console_cmd}: mute {PLAYER} 12h [AUTOMUTE] Intentos excesivos de lenguaje explícito"
+      8:
+      - "{console_cmd}: tempban {PLAYER} 5d [AUTOBAN] Intentos excesivos de lenguaje explícito"
+      - "{console_cmd}: cswarnings clearmodulewarnings {PLAYER} word-and-phrase-filter"
+  spam-blocker:
+    enabled: true
+    punishments:
+      1:
+      - "{player_msg}: &r"
+      - "{player_msg}: &e&lAVISO VERBAL &7» &fEvita enviar mensajes similares tan rápido."
+      - "{player_msg}: &r"
+      2:
+      - "{console_cmd}: warn {PLAYER} Spam en el chat"
+      3:
+      - "{console_cmd}: warn {PLAYER} Spam en el chat (última advertencia)"
+      7:
+      - "{console_cmd}: mute {PLAYER} 6h [AUTOMUTE] Intentos excesivos de spam"
+      - "{console_cmd}: cswarnings clearmodulewarnings {PLAYER} spam-blocker"
+  unicode-remover:
+    enabled: true
+    punishments:
+      1:
+      - "{player_msg}: &r"
+      - "{player_msg}: &e&lAVISO VERBAL &7» &fEvita enviar mensajes con caracteres no permitidos."
+      - "{player_msg}: &r"
+      2:
+      - "{console_cmd}: warn {PLAYER} Caracteres no permitidos en el chat"
+      3:
+      - "{console_cmd}: warn {PLAYER} Caracteres no permitidos en el chat (última advertencia)"
+      6:
+      - "{console_cmd}: mute {PLAYER} 12h [AUTOMUTE] Intentos excesivos de unicode no permitido en el chat"
+      - "{console_cmd}: cswarnings clearmodulewarnings {PLAYER} unicode-remover"
+  cap-limiter:
+    enabled: true
+    punishments:
+      1:
+      - "{player_msg}: &r"
+      - "{player_msg}: &e&lAVISO VERBAL &7» &fEvita enviar mensajes con mayúsculas excesivas."
+      - "{player_msg}: &r"
+      2:
+      - "{console_cmd}: warn {PLAYER} Mayúsculas excesivas en el chat"
+      3:
+      - "{console_cmd}: warn {PLAYER} Mayúsculas excesivas en el chat (última advertencia)"
+      6:
+      - "{console_cmd}: mute {PLAYER} 1h [AUTOMUTE] Intentos excesivos de spam de mayúsculas"
+      9:
+      - "{console_cmd}: tempban {PLAYER} 12h [AUTOBAN] Intentos excesivos de spam de mayúsculas"
+      - "{console_cmd}: cswarnings clearmodulewarnings {PLAYER} cap-limiter"
+  anti-parrot:
+    enabled: true
+    punishments:
+      1:
+      - "{player_msg}: &r"
+      - "{player_msg}: &e&lAVISO VERBAL &7» &fEvita copiar los mensajes de otros jugadores."
+      - "{player_msg}: &r"
+      2:
+      - "{console_cmd}: warn {PLAYER} Copiar mensajes de otros jugadores"
+      3:
+      - "{console_cmd}: warn {PLAYER} Copiar mensajes de otros jugadores (última advertencia)"
+      6:
+      - "{console_cmd}: ban {PLAYER} [AUTOBAN] Detectado como spambot loro"
+      - "{console_cmd}: cswarnings clearmodulewarnings {PLAYER} anti-parrot"
+  anti-chat-flood:
+    enabled: false
+    punishments:
+      1:
+      - "{player_msg}: &r"
+      - "{player_msg}: &e&lAVISO VERBAL &7» &fEvita inundar el chat."
+      - "{player_msg}: &r"
+      2:
+      - "{console_cmd}: warn {PLAYER} Inundar el chat"
+      3:
+      - "{console_cmd}: warn {PLAYER} Inundar el chat (última advertencia)"
+      6:
+      - "{console_cmd}: mute {PLAYER} 1h [AUTOMUTE] Intentos excesivos de inundar el chat"
+      - "{console_cmd}: cswarnings clearmodulewarnings {PLAYER} anti-chat-flood"
+  anti-statue-spambot:
+    enabled: true
+    punishments:
+      1:
+      - "{player_msg}: &r"
+      - "{player_msg}: &e&lAVISO VERBAL &7» &fTu comportamiento en el chat es sospechoso. Revisa las &6/reglas&f."
+      - "{player_msg}: &r"
+      2:
+      - "{console_cmd}: warn {PLAYER} Comportamiento sospechoso de spambot"
+      3:
+      - "{console_cmd}: warn {PLAYER} Comportamiento sospechoso de spambot (última advertencia)"
+      6:
+      - "{console_cmd}: tempban {PLAYER} 7d [AUTOBAN] Detectado como spambot estatua"
+  chat-executor:
+    enabled: false
+    punishments: []
+  chat-cooldown:
+    enabled: false
+    punishments: []

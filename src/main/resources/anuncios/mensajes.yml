@@ -1,0 +1,27 @@
+#=================================================================================================#
+#                  BatmanChat - anuncios/mensajes.yml (mensajes de los comandos)
+#=================================================================================================#
+#
+#  Reemplaza al language.yml de InfiniteAnnouncements, ya en espanol.
+#  Variables: {prefix}, {id}, {command}, {player}, {total}.
+#
+#=================================================================================================#
+
+messages:
+  prefix: '&8[&7Batman&cAnuncios&8]'
+  player-not-found: "&cJugador &e{player} &cno encontrado."
+  invalid-usage: "&cUso incorrecto! &7Comando: &e{command}"
+  invalid-id: "&cNo existe el anuncio &e{id}&c."
+  only-players: "&cSolo los jugadores pueden usar esto."
+
+command:
+  no-permission: '&cNo tienes permiso para hacer eso.'
+  reload: '&aHas recargado la configuracion y los mensajes de los anuncios.'
+  toggle-on: '&7Has &aactivado &7los anuncios.'
+  toggle-off: '&7Has &cdesactivado &7los anuncios.'
+  toggle-sound-on: '&7Has &aactivado &7el sonido de los anuncios.'
+  toggle-sound-off: '&7Has &cdesactivado &7el sonido de los anuncios.'
+  preview: '&7Vista previa del anuncio &e{id}&7 (solo la ves tu).'
+  send: '&7Anuncio &e{id} &7enviado a todos los jugadores.'
+  list-header: '&7Anuncios cargados (&e{total}&7):'
+  list-line: '&8» &e{id} &7- tipo &f{type} &7- cada &f{interval}s &7- lineas: &f{lines}'

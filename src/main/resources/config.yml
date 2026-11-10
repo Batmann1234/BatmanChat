@@ -1,0 +1,46 @@
+#=================================================================================================#
+#                                  BatmanChat - config.yml (general)
+#=================================================================================================#
+#
+#  BatmanChat reemplaza a ChatManager, ChatSentry e InfiniteAnnouncements.
+#  Cada modulo tiene sus propios ymls (carpetas chat/, anuncios/, servidor/, proteccion/ ...).
+#  Aqui solo se activan o desactivan los modulos completos. Dentro de cada modulo hay
+#  mas interruptores (por ejemplo en proteccion/config.yml se activa cada proteccion).
+#
+#  /batmanchat reload  recarga todos los ymls y reinicia los modulos.
+#
+#=================================================================================================#
+
+modulos:
+  # ChatSentry: filtro de palabras, links/ips, spam, cooldown, flood, unicode, mayusculas,
+  # anti-parrot, anti-bot, anti-relog, anti-join-flood, ejecutor de chat, command spy,
+  # auto-castigos, avisos a admins, notificaciones a Discord, lockdown.
+  proteccion: true
+
+  # InfiniteAnnouncements: anuncios automaticos (CHAT, ACTIONBAR, BOSSBAR, TITLE).
+  anuncios: true
+
+  # ChatManager: mensajes de primera entrada, entrada/salida, por grupo y MOTD.
+  mensajes-servidor: true
+
+  # ChatManager: /broadcast, /announcement y /warning.
+  broadcast: true
+
+  # ChatManager: /clearchat, /mutechat y staff chat.
+  control-chat: true
+
+  # Formato de chat por rango, colores por permiso, hex, gradientes, emojis, menciones,
+  # cooldown por rango y respuestas automaticas.
+  formato-chat: true
+
+  # !mano, !inv, !ender, !dinero y !ping en el chat (con hover y sin dupes).
+  items-interactivos: true
+
+  # Mensajes de muerte personalizados por causa (con el item del arma en hover).
+  mensajes-muerte: true
+
+  # /batmanchat compra <jugador> <paquete>: anuncio de compras de la tienda (Tebex u otra).
+  tienda: true
+
+  # /encuesta: encuestas rapidas con opciones clicables.
+  encuestas: true

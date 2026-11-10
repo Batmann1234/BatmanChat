@@ -1,0 +1,35 @@
+#=================================================================================================#
+#              BatmanChat - chat/respuestas-automaticas.yml (respuestas automaticas)
+#=================================================================================================#
+#
+#  Cuando un jugador escribe algo que contiene una de las frases, recibe la respuesta
+#  SOLO EL (los demas jugadores no la ven). Su mensaje se envia normal.
+#  Ejemplo: alguien pregunta "cual es la ip" y le llega la IP en privado.
+#
+#  Contiene: frases (sin importar mayusculas ni tildes). Basta con que el mensaje incluya una.
+#  Regex:    expresiones regulares opcionales (Java), en lugar de/ademas de Contiene.
+#  Cooldown: segundos antes de volver a responderle lo mismo al mismo jugador.
+#  Variables: {player}. Tambien PlaceholderAPI. Colores y <center> como siempre.
+#
+#=================================================================================================#
+
+Enable: true
+# Ticks de retraso (20 = 1 segundo) para que la respuesta salga despues de su mensaje.
+Retraso_Ticks: 5
+
+Respuestas:
+  ip:
+    Contiene: ["cual es la ip", "ip del server", "ip del servidor", "como entro al server"]
+    Cooldown: 30
+    Respuesta:
+      - "{Prefix} &7Hola &f{player}&7, entra a nuestro servidor con la IP &aplay.tuservidor.com"
+  tienda:
+    Contiene: ["donde compro rango", "como compro rango", "como compro vip", "donde esta la tienda"]
+    Cooldown: 30
+    Respuesta:
+      - "{Prefix} &7Puedes comprar rangos en &f/tienda"
+  discord:
+    Contiene: ["discord del server", "link del discord", "cual es el discord"]
+    Cooldown: 30
+    Respuesta:
+      - "{Prefix} &7Unete a nuestro discord con &f/discord"

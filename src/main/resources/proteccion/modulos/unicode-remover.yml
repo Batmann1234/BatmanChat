@@ -1,0 +1,25 @@
+# BatmanChat - proteccion/modulos/unicode-remover.yml
+# (Valores y listas tal como los tenias en ChatSentry. Los comentarios estan en ingles, como el original.)
+# Tambien se acepta el permiso viejo de bypass (chatsentry.*) y el general batmanchat.proteccion.bypass.
+# --------------------------------------------------------------------------------------
+# Unicode Remover:
+# Removes non US-ASCII (US keyboard) characters in chat messages and commands to prevent alphanumeric lookalike unicode characters from being used to bypass filters & modules. Has the option to use a compatibility mode that only blocks unicode used by hacked clients - blocking virtually all alphanumeric lookalike unicode supported by MC while allowing other language.
+# Bypass permission: "batmanchat.proteccion.unicode-remover.bypass"
+# --------------------------------------------------------------------------------------
+
+# Certain hacked clients allow players to type in alphanumeric lookalike unicode characters in order to bypass filters. Enabling this will only limit said alphanumeric lookalike unicode characters that are used by hacked clients and text generators to exploit filters while excluding unicode used by other languages.
+# Disabling this will block all unicode (which may cause issues if people speak other languages than English)
+# Though it allows for more protection if disabled, having this off may cause conflicts if players speak languages other than English.
+enable-compatibility-mode: true
+
+# If you have certain unicode characters you'd like the filter to ignore entirely you may add them below
+ignored-unicode-chars:
+- "á"
+- "é"
+- "í"
+- "ó"
+- "ú"
+- "ö"
+- "ő"
+- "ü"
+- "ű"

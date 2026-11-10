@@ -1,0 +1,56 @@
+#=================================================================================================#
+#                    BatmanChat - chat/menciones.yml (menciones a jugadores)
+#=================================================================================================#
+#
+#  Cuando alguien escribe el nombre de un jugador conectado en el chat, ese jugador ve el nombre
+#  resaltado y recibe un sonido / titulo / actionbar.
+#  Cada jugador puede desactivar sus avisos con /batmanchat menciones.
+#
+#  Permisos: batmanchat.menciones (poder mencionar, por defecto todos)
+#            batmanchat.menciones.todos (usar @todos / @all, solo staff)
+#
+#  Variables: {player} (quien menciona), {mentioned} (el mencionado)
+#
+#=================================================================================================#
+
+Enable: true
+
+# Detectar el nombre aunque no lleve @ delante ("hola Batman"). Si es false solo cuenta "@Batman".
+Detectar_Sin_Arroba: true
+
+# Como se ve el nombre resaltado SOLO para el jugador mencionado.
+Formato_Resaltado: "&e&l@{mentioned}&r"
+
+# No avisar al jugador que se menciona a si mismo.
+Ignorar_Autoreferencia: true
+
+# Segundos minimos entre avisos al mismo jugador (evita spam de sonidos).
+Cooldown_Aviso: 3
+
+Sonido:
+  toggle: true
+  value: 'ENTITY_EXPERIENCE_ORB_PICKUP'
+  volume: 1.0
+  pitch: 1.2
+
+Actionbar:
+  Enable: true
+  Mensaje: "&e{player} &7te ha mencionado en el chat"
+
+Title:
+  Enable: false
+  Titulo: "&e&l@{mentioned}"
+  Subtitulo: "&7{player} te menciono"
+  Fade_In: 5
+  Stay: 40
+  Fade_Out: 10
+
+# @todos / @all / @here avisan a todos los conectados (permiso batmanchat.menciones.todos).
+Todos:
+  Enable: true
+  Palabras: ["@todos", "@all", "@everyone"]
+  Formato_Resaltado: "&c&l{palabra}&r"
+
+Mensajes:
+  Activadas: "{Prefix} &aHas activado los avisos de menciones."
+  Desactivadas: "{Prefix} &cHas desactivado los avisos de menciones."

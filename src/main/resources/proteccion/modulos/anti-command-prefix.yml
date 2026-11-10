@@ -1,0 +1,25 @@
+# BatmanChat - proteccion/modulos/anti-command-prefix.yml
+# (Valores y listas tal como los tenias en ChatSentry. Los comentarios estan en ingles, como el original.)
+# Tambien se acepta el permiso viejo de bypass (chatsentry.*) y el general batmanchat.proteccion.bypass.
+# --------------------------------------------------------------------------------------
+# Anti Command Prefix:
+# Prevents players using prefixed commands to get around filters and discover potential sensitive server information like the plugins. Ex. /minecraft:me instead of /me. Optionally integrates with the Command Spy module; when a command is modified/a prefix is removed, it will appear crossed out in the command spy notification.
+# Bypass permission: "batmanchat.proteccion.anti-command-prefix.bypass"
+# --------------------------------------------------------------------------------------
+
+# This module works by modifying command contents after they're sent by players. Ex. "/essentials:msg" will run without the prefix ("/msg")
+
+# Commands below will be allowed to be ran with their prefix.
+# Set to "allowed-prefixed-commands: []" to have an empty list.
+allowed-prefixed-commands:
+- "/plugin:command"
+- "/plugin2:command"
+
+# Prefixes below will be allowed to be ran no matter the command.
+# Set to "allowed-global-prefixes: []" to have an empty list.
+allowed-global-prefixes:
+- "plugin:"
+- "plugin2:"
+
+# Should the module send the message (changeable via lang.yml) notifying the player their command was modified when it removes a disallowed prefix?
+send-msg-when-modified: true

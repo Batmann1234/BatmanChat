@@ -1,0 +1,20 @@
+#=================================================================================================#
+#                          BatmanChat - mensajes.yml (mensajes generales)
+#=================================================================================================#
+#
+#  Mensajes generales del plugin (los de cada modulo estan en el yml de ese modulo).
+#
+#  Codigos de color: "&" (&a, &l ...), HEX con #RRGGBB o &#RRGGBB y degradados con
+#  <gradient:#FF0000:#0000FF>texto</gradient>. Centrar con <center>texto</center>.
+#  Variables: {Prefix}, {target}, {usage}, {player}.
+#
+#=================================================================================================#
+
+Message:
+  Prefix: '#2AFF39&lCHAT &8»&r'
+  No_Permission: '{Prefix} &7No tienes permisos para hacer esto.'
+  Player_Not_Found: '{Prefix} &7El jugador &c{target} &7no ha sido encontrado.'
+  Reload: '{Prefix} &aLa configuracion ha sido recargada.'
+  Invalid_Usage: '{Prefix} &7Este uso no es valido, usa: &f{usage}.'
+  Only_Players: '{Prefix} &cEste comando solo lo pueden usar jugadores.'
+  Only_Console: '{Prefix} &cEste comando solo se puede usar desde la consola.'

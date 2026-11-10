@@ -1,0 +1,37 @@
+#=================================================================================================#
+#                  BatmanChat - anuncios/placeholders.yml (placeholders propios)
+#=================================================================================================#
+#
+#  Reemplaza al placeholders.yml de InfiniteAnnouncements.
+#  Escribe %%nombre%% dentro de una linea de un anuncio y se reemplaza por el texto con hover y click.
+#  Estos placeholders solo funcionan en los anuncios de BatmanChat.
+#
+#  Click.Type: RUN_COMMAND, SUGGEST_COMMAND, OPEN_URL, COPY_TO_CLIPBOARD
+#
+#=================================================================================================#
+
+Placeholders:
+  example:
+    Text: "&2Ejemplo!"
+    Hover: "&6Haz clic para ir al spawn"
+    Click:
+      Type: "RUN_COMMAND"
+      Content: "/spawn"
+  discord:
+    Text: "&4Discord"
+    Hover: "&eHaz clic para obtener la invitacion de nuestro discord"
+    Click:
+      Type: "OPEN_URL"
+      Content: "https://discord.zachfr.com"
+  tienda:
+    Text: "&#94FF00Tienda"
+    Hover: "&eHaz clic para abrir la tienda"
+    Click:
+      Type: "RUN_COMMAND"
+      Content: "/tienda"
+  reglas:
+    Text: "&#FF0000Reglas"
+    Hover: "&eHaz clic para ver las reglas"
+    Click:
+      Type: "RUN_COMMAND"
+      Content: "/reglas"

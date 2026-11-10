@@ -1,0 +1,76 @@
+#=================================================================================================#
+#                    BatmanChat - encuestas.yml (/encuesta)
+#=================================================================================================#
+#
+#  /encuesta crear <segundos> <pregunta> | <opcion 1> | <opcion 2> | ...   (permiso batmanchat.encuesta.crear)
+#      Ejemplo: /encuesta crear 120 Que evento quieres? | Spleef | Carrera | Parkour
+#  /encuesta votar <numero>   (alias: clic en la opcion)                    (permiso batmanchat.encuesta.votar, por defecto todos)
+#  /encuesta resultados       muestra como va la encuesta
+#  /encuesta cerrar           cierra la encuesta y anuncia el resultado     (permiso batmanchat.encuesta.crear)
+#  Solo hay una encuesta activa a la vez.
+#
+#  Variables: {pregunta}, {creador}, {n}, {opcion}, {votos}, {porcentaje}, {barra}, {total}, {tiempo}, {ganador}
+#
+#=================================================================================================#
+
+Enable: true
+
+Max_Opciones: 8
+# Segundos por defecto si no se indica o se indica mal.
+Duracion_Defecto: 120
+Permitir_Cambiar_Voto: true
+
+# Bossbar con la cuenta atras mientras dura la encuesta.
+Bossbar:
+  Enable: true
+  Titulo: "&6&lENCUESTA &f{pregunta} &7({tiempo}s)"
+  Color: YELLOW
+  Style: PROGRESS
+
+Sonido:
+  toggle: true
+  value: 'BLOCK_NOTE_BLOCK_PLING'
+  volume: 1.0
+  pitch: 1.5
+
+# Anuncio al empezar (despues salen las opciones con clic para votar).
+Anuncio:
+  - ""
+  - "<center>&8&m------------&r &6&lNUEVA ENCUESTA &8&m------------</center>"
+  - "<center>&f{pregunta}</center>"
+  - "<center>&7Creada por &f{creador} &7- dura &e{tiempo}s</center>"
+  - ""
+
+Opcion_Formato: "&8» &8[&a{n}&8] &f{opcion}"
+Opcion_Hover: "&eClic para votar por &f{opcion}"
+
+Final:
+  Encabezado:
+    - ""
+    - "<center>&8&m------------&r &6&lENCUESTA FINALIZADA &8&m------------</center>"
+    - "<center>&f{pregunta}</center>"
+  Linea: "&8[&a{n}&8] &f{opcion} &7- &e{votos} &7({porcentaje}%) {barra}"
+  Ganador: "<center>&7Ganador: &a&l{ganador}</center>"
+  Empate: "<center>&7Resultado: &e&lEMPATE</center>"
+  Sin_Votos: "<center>&7Nadie voto en esta encuesta.</center>"
+  Pie:
+    - ""
+
+Barra:
+  Largo: 10
+  Lleno: "&a█"
+  Vacio: "&7░"
+
+Mensajes:
+  Sin_Encuesta: "{Prefix} &cNo hay ninguna encuesta activa."
+  Ya_Hay: "{Prefix} &cYa hay una encuesta activa. Usa &e/encuesta cerrar &cprimero."
+  Uso_Crear: "{Prefix} &cUso: &e/encuesta crear <segundos> <pregunta> | <opcion1> | <opcion2> ..."
+  Pocas_Opciones: "{Prefix} &cNecesitas al menos 2 opciones separadas por |."
+  Muchas_Opciones: "{Prefix} &cMaximo {max} opciones."
+  Opcion_Invalida: "{Prefix} &cEsa opcion no existe."
+  Voto_Registrado: "{Prefix} &aVoto registrado: &f{opcion}"
+  Voto_Cambiado: "{Prefix} &aHas cambiado tu voto a: &f{opcion}"
+  Ya_Voto: "{Prefix} &cYa votaste en esta encuesta."
+  Cerrada: "{Prefix} &7Encuesta cerrada."
+  Solo_Jugadores: "{Prefix} &cSolo los jugadores pueden votar."
+  Resultados_Parciales: "{Prefix} &7Resultados parciales:"

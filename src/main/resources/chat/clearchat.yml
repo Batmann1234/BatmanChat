@@ -1,0 +1,22 @@
+#=================================================================================================#
+#                    BatmanChat - chat/clearchat.yml (/clearchat)
+#=================================================================================================#
+#
+#  /clearchat (alias /cc)   Permiso: batmanchat.clearchat   (o chatmanager.clearchat)
+#  Bypass (no se les borra el chat): batmanchat.clearchat.bypass  (o chatmanager.bypass.clearchat)
+#  Variables: {player}
+#
+#=================================================================================================#
+
+# Borrar el chat de cada jugador cuando entra al servidor.
+Clear_On_Join: false
+# Cuantas lineas en blanco se envian.
+Broadcasted_Lines: 300
+
+# Mensaje para el staff con bypass (a ellos no se les borra el chat).
+Staff_Message: '{Prefix} &eEl chat ha sido borrado por {player}.'
+# Mensaje que ven todos despues de borrar.
+Broadcast_Message:
+  - '&f*&c&m--------------------------------------------&f*'
+  - '&eEl chat ha sido borrado por {player}'
+  - '&f*&c&m--------------------------------------------&f*'

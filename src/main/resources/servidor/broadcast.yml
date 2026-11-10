@@ -1,0 +1,54 @@
+#=================================================================================================#
+#        BatmanChat - servidor/broadcast.yml (/broadcast, /announcement y /warning)
+#=================================================================================================#
+#
+#  Reemplaza a los comandos de difusion de ChatManager.
+#
+#  /broadcast <mensaje>     (alias /bc)      Permiso: batmanchat.broadcast      (o chatmanager.broadcast)
+#  /announcement <mensaje>                   Permiso: batmanchat.announcement   (o chatmanager.announcement)
+#  /warning <mensaje>                        Permiso: batmanchat.warning        (o chatmanager.warning)
+#
+#  Variables: {message}. Colores: &a, #RRGGBB, &#RRGGBB, <gradient:#A:#B>texto</gradient>, <center>texto</center>.
+#  El mensaje que escribe el staff admite colores.
+#  NOTA: Essentials tambien tiene /broadcast. Si se pisan, usa /batmanchat:broadcast o desactiva el de Essentials.
+#
+#=================================================================================================#
+
+Broadcast:
+  # Prefijo que va delante del mensaje.
+  Prefix: "&d&lANUNCIO "
+  # Color por defecto del mensaje.
+  Default_Color: "&f"
+  # Sonido que se envia a todos. toggle: false para desactivarlo.
+  sound:
+    toggle: false
+    value: 'ENTITY_PLAYER_LEVELUP'
+    pitch: 1.0
+    volume: 1.0
+
+Announcement:
+  sound:
+    toggle: false
+    value: 'ENTITY_PLAYER_LEVELUP'
+    pitch: 1.0
+    volume: 1.0
+  Message:
+    - "&8&m----------------------------------------------------"
+    - "&b&l                          ANUNCIO    "
+    - "{message}"
+    - "&8&m----------------------------------------------------"
+
+Warning:
+  sound:
+    toggle: false
+    value: 'ENTITY_PLAYER_LEVELUP'
+    pitch: 1.0
+    volume: 1.0
+  Message:
+    - "&8&m--------------------------"
+    - "&4&lALERTA"
+    - "{message}"
+    - "&8&m--------------------------"
+
+Mensajes:
+  Uso: "{Prefix} &cUso: &e/{command} <mensaje>"

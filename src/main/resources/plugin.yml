@@ -1,0 +1,148 @@
+name: BatmanChat
+version: '1.0.0'
+main: me.batman.batmanchat.BatmanChat
+api-version: '1.21'
+authors: [Batman]
+description: Chat, anuncios, mensajes y proteccion de chat en un solo plugin (reemplaza ChatManager, ChatSentry e InfiniteAnnouncements).
+softdepend: [PlaceholderAPI, Vault, LuckPerms, Essentials, EssentialsX]
+
+commands:
+  batmanchat:
+    description: Comando principal de BatmanChat (reload, ayuda y subcomandos).
+    aliases: [bchat]
+    usage: /<command> help
+  kcs:
+    description: Comando principal de las protecciones de chat (antes /chatsentry).
+    aliases: [chatsentry]
+    usage: /<command> help
+  cswarn:
+    description: Advertir manualmente a un jugador por un modulo de proteccion.
+    usage: /<command> <jugador> <modulo>
+  cswarnings:
+    description: Ver y administrar las advertencias de un jugador.
+    usage: /<command> <view|pardon|pardonallmanual|clearallwarnings|clearmodulewarnings> <jugador>
+  cslockdown:
+    description: Bloqueo del servidor (solo conocidos / solo exentos).
+    usage: /<command> <on|off|mode|list|add|remove>
+  commandspy:
+    description: Ver los comandos que escriben los jugadores.
+    aliases: [cspy]
+    usage: /<command> [tvn|reload]
+  anuncios:
+    description: Anuncios automaticos (antes InfiniteAnnouncements).
+    aliases: [ia, announcements, infiniteannouncements]
+    usage: /<command> <reload|toggle|togglesound|preview|list|send>
+  broadcast:
+    description: Enviar un mensaje a todo el servidor.
+    aliases: [bc]
+    usage: /<command> <mensaje>
+  announcement:
+    description: Enviar un anuncio grande a todo el servidor.
+    usage: /<command> <mensaje>
+  warning:
+    description: Enviar una alerta a todo el servidor.
+    usage: /<command> <mensaje>
+  clearchat:
+    description: Borrar el chat.
+    aliases: [cc]
+    usage: /<command>
+  mutechat:
+    description: Silenciar o activar el chat.
+    aliases: [togglechat, silenciarchat]
+    usage: /<command>
+  staffchat:
+    description: Chat privado del staff.
+    aliases: [sc]
+    usage: /<command> [mensaje]
+  encuesta:
+    description: Encuestas en el chat.
+    aliases: [poll]
+    usage: /<command> <crear|votar|resultados|cerrar>
+
+permissions:
+  batmanchat.admin:
+    description: Recargar el plugin (/batmanchat reload).
+    default: op
+  batmanchat.anuncios.reload:
+    default: op
+  batmanchat.anuncios.admin:
+    default: op
+  batmanchat.anuncios.toggle:
+    default: true
+  batmanchat.broadcast:
+    default: op
+  batmanchat.announcement:
+    default: op
+  batmanchat.warning:
+    default: op
+  batmanchat.clearchat:
+    default: op
+  batmanchat.clearchat.bypass:
+    default: false
+  batmanchat.mutechat:
+    default: op
+  batmanchat.mutechat.bypass:
+    default: false
+  batmanchat.staffchat:
+    default: op
+  batmanchat.delay.bypass:
+    default: false
+  batmanchat.emojis:
+    default: true
+  batmanchat.menciones:
+    default: true
+  batmanchat.menciones.todos:
+    default: op
+  batmanchat.vanish.see:
+    default: op
+  batmanchat.items.mano:
+    default: true
+  batmanchat.items.inv:
+    default: true
+  batmanchat.items.ender:
+    default: true
+  batmanchat.items.dinero:
+    default: true
+  batmanchat.items.ping:
+    default: true
+  batmanchat.items.ver:
+    default: true
+  batmanchat.items.cooldown.bypass:
+    default: false
+  batmanchat.encuesta.votar:
+    default: true
+  batmanchat.encuesta.crear:
+    default: op
+  batmanchat.tienda.admin:
+    default: op
+  batmanchat.color.all:
+    default: false
+  batmanchat.color.hex:
+    default: false
+  batmanchat.color.gradient:
+    default: false
+  batmanchat.format.all:
+    default: false
+  batmanchat.proteccion.bypass:
+    description: Saltarse TODAS las protecciones de chat.
+    default: false
+  batmanchat.proteccion.warn:
+    default: op
+  batmanchat.proteccion.warnings:
+    default: op
+  batmanchat.proteccion.lockdown:
+    default: op
+  batmanchat.proteccion.lookup:
+    default: op
+  batmanchat.proteccion.notify:
+    default: op
+  batmanchat.proteccion.commandspy:
+    default: op
+  batmanchat.proteccion.commandspy.toggle:
+    default: op
+  batmanchat.proteccion.commandspy.exempt:
+    default: false
+  batmanchat.proteccion.warn.exempt:
+    default: false
+  batmanchat.proteccion.autopunisher.exempt:
+    default: false

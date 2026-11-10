@@ -1,0 +1,26 @@
+#=================================================================================================#
+#                    BatmanChat - chat/staffchat.yml (/staffchat)
+#=================================================================================================#
+#
+#  /staffchat (alias /sc)            activa o desactiva el modo staff chat (todo lo que escribas va al staff)
+#  /staffchat <mensaje>              envia un solo mensaje al staff
+#  Permiso: batmanchat.staffchat   (o chatmanager.staffchat)
+#  Ven el staff chat los jugadores con el mismo permiso.
+#  Variables: {player}, {displayname}, {message}
+#
+#=================================================================================================#
+
+Enable: true
+Format: "#03FF00&lSTAFFCHAT &f{player} &8» &f{message}"
+
+# Aparece una bossbar cuando estas en modo staff chat.
+Boss_Bar:
+  Enable: true
+  Title: "#03FF00Staff Chat"
+  Color: GREEN
+  Style: PROGRESS
+
+Mensajes:
+  Enabled: '{Prefix} &aStaff chat activado.'
+  Disabled: '{Prefix} &cStaff chat desactivado.'
+  Disabled_Module: '{Prefix} &cEl staff chat esta desactivado.'

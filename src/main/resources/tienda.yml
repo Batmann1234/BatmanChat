@@ -1,0 +1,208 @@
+#=================================================================================================#
+#                BatmanChat - tienda.yml (anuncio de compras de Tebex / tienda)
+#=================================================================================================#
+#
+#  Cuando alguien compra en tu tienda (Tebex u otra) se ejecuta un comando de CONSOLA que anuncia la compra.
+#
+#  CONFIGURACION EN TEBEX: en cada paquete anade el comando (tipo "Al comprar"):
+#
+#      batmanchat compra {username} hero {price} {transaction}
+#
+#  - "hero" es el nombre del paquete de abajo (hero, elite, legendario, arcano, ancestral...). Si no existe
+#    se usa "default".
+#  - {price} y {transaction} son opcionales. Si se manda {transaction} y ya se anuncio esa compra, se ignora
+#    (Tebex a veces reintenta el comando) para no anunciar dos veces.
+#  - Tambien sirve desde la consola del servidor para probar: batmanchat compra TuNombre hero 9.99
+#  - Si el comprador no esta conectado el anuncio sale igual (sin fuegos artificiales ni mensaje privado).
+#
+#  Permiso para usar el comando: batmanchat.tienda.admin (la consola siempre puede).
+#  Variables: {player}, {paquete}, {precio}, {transaccion}
+#
+#=================================================================================================#
+
+Enable: true
+
+# Cuantas transacciones recuerda el plugin para no anunciar dos veces la misma.
+Max_Transacciones_Recordadas: 500
+
+Paquetes:
+  hero:
+    Nombre: "#FF0000&lHERO"
+    # Mensaje para todo el servidor (chat).
+    Anuncio:
+      - ""
+      - "<center>&8&m------------&r &6&lNUEVA COMPRA &8&m------------</center>"
+      - "<center>&f{player} &7acaba de comprar el rango {paquete}</center>"
+      - "<center>&7Apoya al servidor en &f/tienda</center>"
+      - ""
+    # Titulo para todos.
+    Titulo:
+      Enable: true
+      Header: "{paquete}"
+      Footer: "&f{player} &7compro este rango"
+      Fade_In: 10
+      Stay: 60
+      Fade_Out: 20
+    # Sonido para todos.
+    Sonido:
+      toggle: true
+      value: 'ENTITY_PLAYER_LEVELUP'
+      volume: 1.0
+      pitch: 1.0
+    # Mensaje privado para el comprador (si esta conectado).
+    Mensaje_Comprador:
+      - "&7Gracias por tu compra de {paquete}&7, {player}! Disfrutalo."
+    # Fuegos artificiales sobre el comprador (si esta conectado).
+    Fuegos:
+      Enable: true
+      Color: "FF0000"
+  elite:
+    Nombre: "#0064FF&lELITE"
+    # Mensaje para todo el servidor (chat).
+    Anuncio:
+      - ""
+      - "<center>&8&m------------&r &6&lNUEVA COMPRA &8&m------------</center>"
+      - "<center>&f{player} &7acaba de comprar el rango {paquete}</center>"
+      - "<center>&7Apoya al servidor en &f/tienda</center>"
+      - ""
+    # Titulo para todos.
+    Titulo:
+      Enable: true
+      Header: "{paquete}"
+      Footer: "&f{player} &7compro este rango"
+      Fade_In: 10
+      Stay: 60
+      Fade_Out: 20
+    # Sonido para todos.
+    Sonido:
+      toggle: true
+      value: 'ENTITY_PLAYER_LEVELUP'
+      volume: 1.0
+      pitch: 1.0
+    # Mensaje privado para el comprador (si esta conectado).
+    Mensaje_Comprador:
+      - "&7Gracias por tu compra de {paquete}&7, {player}! Disfrutalo."
+    # Fuegos artificiales sobre el comprador (si esta conectado).
+    Fuegos:
+      Enable: true
+      Color: "0064FF"
+  legendario:
+    Nombre: "#FCFF00&lLEGENDARIO"
+    # Mensaje para todo el servidor (chat).
+    Anuncio:
+      - ""
+      - "<center>&8&m------------&r &6&lNUEVA COMPRA &8&m------------</center>"
+      - "<center>&f{player} &7acaba de comprar el rango {paquete}</center>"
+      - "<center>&7Apoya al servidor en &f/tienda</center>"
+      - ""
+    # Titulo para todos.
+    Titulo:
+      Enable: true
+      Header: "{paquete}"
+      Footer: "&f{player} &7compro este rango"
+      Fade_In: 10
+      Stay: 60
+      Fade_Out: 20
+    # Sonido para todos.
+    Sonido:
+      toggle: true
+      value: 'ENTITY_PLAYER_LEVELUP'
+      volume: 1.0
+      pitch: 1.0
+    # Mensaje privado para el comprador (si esta conectado).
+    Mensaje_Comprador:
+      - "&7Gracias por tu compra de {paquete}&7, {player}! Disfrutalo."
+    # Fuegos artificiales sobre el comprador (si esta conectado).
+    Fuegos:
+      Enable: true
+      Color: "FCFF00"
+  arcano:
+    Nombre: "#00ACFF&lARCANO"
+    # Mensaje para todo el servidor (chat).
+    Anuncio:
+      - ""
+      - "<center>&8&m------------&r &6&lNUEVA COMPRA &8&m------------</center>"
+      - "<center>&f{player} &7acaba de comprar el rango {paquete}</center>"
+      - "<center>&7Apoya al servidor en &f/tienda</center>"
+      - ""
+    # Titulo para todos.
+    Titulo:
+      Enable: true
+      Header: "{paquete}"
+      Footer: "&f{player} &7compro este rango"
+      Fade_In: 10
+      Stay: 60
+      Fade_Out: 20
+    # Sonido para todos.
+    Sonido:
+      toggle: true
+      value: 'ENTITY_PLAYER_LEVELUP'
+      volume: 1.0
+      pitch: 1.0
+    # Mensaje privado para el comprador (si esta conectado).
+    Mensaje_Comprador:
+      - "&7Gracias por tu compra de {paquete}&7, {player}! Disfrutalo."
+    # Fuegos artificiales sobre el comprador (si esta conectado).
+    Fuegos:
+      Enable: true
+      Color: "00ACFF"
+  ancestral:
+    Nombre: "#9F00FF&lANCESTRAL"
+    # Mensaje para todo el servidor (chat).
+    Anuncio:
+      - ""
+      - "<center>&8&m------------&r &6&lNUEVA COMPRA &8&m------------</center>"
+      - "<center>&f{player} &7acaba de comprar el rango {paquete}</center>"
+      - "<center>&7Apoya al servidor en &f/tienda</center>"
+      - ""
+    # Titulo para todos.
+    Titulo:
+      Enable: true
+      Header: "{paquete}"
+      Footer: "&f{player} &7compro este rango"
+      Fade_In: 10
+      Stay: 60
+      Fade_Out: 20
+    # Sonido para todos.
+    Sonido:
+      toggle: true
+      value: 'ENTITY_PLAYER_LEVELUP'
+      volume: 1.0
+      pitch: 1.0
+    # Mensaje privado para el comprador (si esta conectado).
+    Mensaje_Comprador:
+      - "&7Gracias por tu compra de {paquete}&7, {player}! Disfrutalo."
+    # Fuegos artificiales sobre el comprador (si esta conectado).
+    Fuegos:
+      Enable: true
+      Color: "9F00FF"
+  default:
+    Nombre: "&6&lPAQUETE"
+    Anuncio:
+      - ""
+      - "<center>&8&m------------&r &6&lNUEVA COMPRA &8&m------------</center>"
+      - "<center>&f{player} &7acaba de comprar {paquete}</center>"
+      - "<center>&7Apoya al servidor en &f/tienda</center>"
+      - ""
+    Titulo:
+      Enable: false
+      Header: "{paquete}"
+      Footer: "&f{player} &7compro este paquete"
+      Fade_In: 10
+      Stay: 60
+      Fade_Out: 20
+    Sonido:
+      toggle: true
+      value: 'ENTITY_PLAYER_LEVELUP'
+      volume: 1.0
+      pitch: 1.0
+    Mensaje_Comprador:
+      - "&7Gracias por tu compra, {player}!"
+    Fuegos:
+      Enable: false
+      Color: "FFFFFF"
+
+Mensajes:
+  Uso: "{Prefix} &cUso: &e/batmanchat compra <jugador> <paquete> [precio] [id-transaccion]"
+  Duplicada: "{Prefix} &eLa transaccion {transaccion} ya fue anunciada, se ignora."
+  Anunciada: "{Prefix} &aCompra de &f{player} &aanunciada ({paquete})."

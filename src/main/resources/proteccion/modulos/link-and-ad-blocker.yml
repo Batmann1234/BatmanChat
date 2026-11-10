@@ -1,0 +1,61 @@
+# BatmanChat - proteccion/modulos/link-and-ad-blocker.yml
+# (Valores y listas tal como los tenias en ChatSentry. Los comentarios estan en ingles, como el original.)
+# Tambien se acepta el permiso viejo de bypass (chatsentry.*) y el general batmanchat.proteccion.bypass.
+# --------------------------------------------------------------------------------------
+# Intelligent Link & Ad Blocker:
+# Prevents web links & server advertising (regular server ips & numeric server ips) with optional extra sensitivity bypass detection in chat, commands, signs, anvils, and books (additional check contexts can be disabled). Includes the ability to whitelist domains or all subdomains of a domain.
+# Bypass permission: "batmanchat.proteccion.link-and-ad-blocker.bypass"
+# --------------------------------------------------------------------------------------
+
+# The below list is the list of domain names (not urls) that will be ignored by the filter.
+# Variants with and without http://, https://, and www. will automatically be handled by the plugin; no need to add them below.
+# Ex. adding "google.com" will allow: https://google.com, http://google.com, www.google.com, https://www.google.com, and http://www.google.com
+# If you wish to whitelist all subdomains of a domain, you can do so with "*."; ex. "*.google.com" will permit all subdomains of Google ("mail.google.com", "https://maps.google.com", etc.)
+# Character case in the below list does not matter. Case variants are automatically checked by the plugin.
+# Set to "domain-whitelist: []" to have an empty list.
+domain-whitelist:
+- "*.AllSubdomainsOfThisDomainAreAllowed.com"
+- "minecraft.net"
+- "spigotmc.org"
+- "*.youtube.com"
+- "youtu.be"
+- "*.spotify.com"
+- "optifine.net"
+- "java.com"
+- "minecraft.fandom.com"
+- "blockpalettes.com"
+
+# IMPORTANT: The below list is only applicable if the COMMAND context is enabled under link-and-ad-blocker in the main config!
+# If you have commands that you would like the filter to ignore checking, add them to the list below.
+# Useful if you want to disable the filters checks in commands that use permissions or use comma lists (extra sensitivity will detect them otherside), or for commands like /msg.
+# Make sure to only include base commands; don't add any command arguments. (spaces)
+# Set to "command-whitelist: []" to have an empty list.
+command-whitelist:
+- "/lp"
+- "/pex"
+- "/mangaddp"
+- "/manuaddp"
+- "/mangdelp"
+- "/manudelp"
+- "/rg"
+- "/region"
+- "//set"
+- "//replace"
+- "//overlay"
+- "//gmask"
+- "//fill"
+
+# If enabled, the plugin will only block roughly 1,500 of the most widely used (TLD) domains (like .com, .net, .org, etc). Keeping this can substantially decrease false positive detections and will still effectively block advertising - however the downside is that uncommon, more suspicious links are unlikely to be detected.
+# Only turn this off if you want maximum protection from links of any kind
+# The current TLD list utilized by the plugin is a modified version of v2025082100 (Aug 21 25) via https://data.iana.org
+only-filter-top-level-domains: false
+
+# If enabled, common exploits to bypass link / ip filters will be blocked. For example, "google,,com", "google(dot)com", "youtube {D_O_T}com", etc.
+# This option is NOT RECOMMENDED unless you deal with lots of advertisements. Since having this on makes the filter extra sensitive, it will be more likely to block things when it shouldn't. Due to how this option blindly processes a lot of messages, it does not respect the domain whitelist or only-filter-top-level-domains and will apply itself to any attempted malformed links it detects.
+extra-sensitive: true
+
+# If enabled, should social handles with periods (ex. "@some.social.handle") will be ignored. Please note turning this on allows people to bypass the filter by simply adding an "@" symbol to the start of the link/ip in question.
+ignore-handles: false
+
+# If enabled, usernames are removed from the input message before the module checks for links. Useful if player names can contain periods or other special characters in your server
+ignore-usernames: true

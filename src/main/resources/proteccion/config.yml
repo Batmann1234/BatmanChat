@@ -1,0 +1,149 @@
+# --------------------------------------------------------------------------------------
+# BatmanChat - proteccion/config.yml
+# Protecciones del chat (antes ChatSentry). Aqui se activa o desactiva CADA proteccion y se
+# elige en que contextos actua (chat, command, sign, anvil, book).
+# Las opciones de cada una estan en proteccion/modulos/<nombre>.yml
+# Otros archivos: lang.yml (mensajes), almacenamiento.yml (base de datos), lockdown.yml.
+# /batmanchat reload recarga todo.
+# --------------------------------------------------------------------------------------
+
+# Procesar eventos que otros plugins ya cancelaron (chat, comandos, yunque, carteles...)
+respect-cancelled-events: true
+# Desactivar el "Kicked for spamming" (disconnect.spam) de Minecraft para dejar el castigo al auto-punisher
+disable-vanilla-spam-kick: true
+# Cortar mensajes/comandos que pasen del limite de 256 caracteres de vanilla
+truncate-unsafe-chat: true
+
+# --------------------------------------------------------------------------------------
+#                                  Modulos
+# --------------------------------------------------------------------------------------
+# Avisa a los admins en tiempo real cuando un modulo se activa (modulos/admin-notifier.yml).
+admin-notifier:
+  enabled: false
+# Notificaciones a Discord por webhooks (modulos/discord-notifier.yml).
+discord-notifier:
+  enabled: false
+# Castigos automaticos por advertencias acumuladas (modulos/auto-punisher.yml).
+auto-punisher:
+  enabled: false
+# Filtro de palabras y frases (modulos/word-and-phrase-filter.yml).
+word-and-phrase-filter:
+  enabled: true
+  contexts:
+    chat: true
+    command: false
+    sign: false
+    anvil: true
+    book: true
+# Bloqueo de links y publicidad de servidores.
+link-and-ad-blocker:
+  enabled: true
+  contexts:
+    chat: true
+    command: true
+    sign: false
+    anvil: true
+    book: true
+# Bloquea mensajes spam y repetidos.
+spam-blocker:
+  enabled: true
+  contexts:
+    chat: true
+    command: false
+# Controla la velocidad de mensajes y comandos.
+chat-cooldown:
+  enabled: false
+  contexts:
+    chat: true
+    command: false
+# Limita caracteres repetidos y palabras larguisimas.
+anti-chat-flood:
+  enabled: true
+  contexts:
+    chat: true
+    command: false
+# Quita caracteres no ASCII que se usan para saltarse filtros.
+unicode-remover:
+  enabled: true
+  contexts:
+    chat: true
+    command: true
+    sign: false
+    anvil: true
+    book: true
+# Limita el uso excesivo de mayusculas.
+cap-limiter:
+  enabled: false
+  contexts:
+    chat: true
+    command: false
+# Evita que clientes hackeados copien mensajes del chat.
+anti-parrot:
+  enabled: true
+# Reemplaza/bloquea mensajes y ejecuta acciones segun patrones (los contextos se definen por entrada).
+chat-executor:
+  enabled: true
+# Bots estatua: no pueden hablar hasta moverse.
+anti-statue-spambot:
+  enabled: true
+  contexts:
+    chat: true
+    command: false
+# Evita entrar y salir muchas veces seguidas.
+anti-relog-spam:
+  enabled: true
+# Limita cuantos jugadores pueden entrar por minuto (ataques de bots).
+anti-join-flood:
+  enabled: true
+# Evita comandos con prefijo (/minecraft:me).
+anti-command-prefix:
+  enabled: false
+# Corrige mayusculas, puntos y errores de escritura (pensado para ingles).
+auto-grammar:
+  enabled: false
+  contexts:
+    chat: true
+    command: false
+# Muestra a los admins los comandos que ejecutan los jugadores (modulos/command-spy.yml).
+command-spy:
+  enabled: false
+
+# --------------------------------------------------------------------------------------
+#                                  Registro (logs)
+# --------------------------------------------------------------------------------------
+# Guardar los mensajes marcados por los modulos (necesario para /kcs lookup)
+enable-violations-log: true
+# Que modulos se guardan (se ignora si lo de arriba esta desactivado)
+enable-logging-for:
+  chat-cooldown: false
+  link-and-ad-blocker: true
+  word-and-phrase-filter: true
+  spam-blocker: true
+  unicode-remover: true
+  cap-limiter: true
+  anti-parrot: true
+  anti-chat-flood: true
+  anti-statue-spambot: false
+  chat-executor: true
+# Borrar logs mas viejos que estos dias (-1 = nunca). Requiere reiniciar el servidor.
+clean-logs-older-than: 30
+
+# --------------------------------------------------------------------------------------
+#                       Anular permisos de bypass (para pruebas)
+# --------------------------------------------------------------------------------------
+# Si pones true, ese modulo se aplica a todos aunque tengan el permiso de bypass o sean op.
+override-bypass-permissions:
+  chat-cooldown: false
+  link-and-ad-blocker: false
+  word-and-phrase-filter: false
+  spam-blocker: false
+  unicode-remover: false
+  cap-limiter: false
+  anti-parrot: false
+  anti-chat-flood: false
+  anti-statue-spambot: false
+  anti-join-flood: false
+  chat-executor: false
+  auto-grammar: false
+  anti-command-prefix: false
+  command-spy: false

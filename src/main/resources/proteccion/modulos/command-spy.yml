@@ -1,0 +1,32 @@
+# --------------------------------------------------------------------------------------
+# Command Spy:
+# Muestra en tiempo real los comandos de los jugadores a los admins. Se pueden usar lista blanca o negra.
+# Para ver los comandos: op o el permiso "batmanchat.proteccion.commandspy".
+# Con "batmanchat.proteccion.commandspy.toggle" (comando /commandspy o /kcs commandspy) se activa/desactiva.
+# Para que los comandos de un jugador/grupo no se muestren: "batmanchat.proteccion.commandspy.exempt".
+# Se activa/desactiva en proteccion/config.yml (command-spy.enabled).
+# --------------------------------------------------------------------------------------
+
+# false: se vigilan todos los comandos menos los que empiecen con los de la lista negra. true: solo los que empiecen con los de la lista blanca.
+use-command-whitelist: false
+
+# Los comandos que empiecen con alguno de esta lista NO se muestran a los admins.
+# Pon "commandspy-command-blacklist: []" para dejar la lista vacia.
+# Pon siempre "/" delante de cada comando o la lista no funcionara.
+# Solo comandos base, sin argumentos (sin espacios).
+commandspy-command-blacklist:
+- "/blacklistedcommand"
+
+# Si use-command-whitelist es true, solo se muestran los comandos que empiecen con alguno de esta lista.
+# Pon "commandspy-command-whitelist: []" para dejar la lista vacia.
+# Pon siempre "/" delante de cada comando o la lista no funcionara.
+# Solo comandos base, sin argumentos (sin espacios).
+commandspy-command-whitelist:
+- "/tell"
+- "/t"
+- "/msg"
+- "/w"
+- "/r"
+- "/whisper"
+- "/w"
+- "/pm"

@@ -1,0 +1,99 @@
+#=================================================================================================#
+#                    BatmanChat - chat/formato.yml (formato del chat por rango)
+#=================================================================================================#
+#
+#  Reemplaza a la seccion Chat_Format de ChatManager (mismos formatos que tenias).
+#
+#  FORMATOS
+#   - Grupos: nombre del grupo de LuckPerms (en minusculas). Se usa el GRUPO PRIMARIO del jugador. Si el
+#     primario no esta en la lista, se usa el ultimo grupo de la lista al que pertenezca (permiso group.<nombre>).
+#     Si no hay ninguno, se usa Default_Format.
+#   - Variables: {message} (el mensaje) y cualquier placeholder de PlaceholderAPI (%player_name%, %luckperms_prefix%...).
+#   - Colores: &a, #RRGGBB, &#RRGGBB y degradados <gradient:#FF0000:#0000FF>texto</gradient>.
+#
+#  COLORES EN EL MENSAJE (lo que escriben los jugadores)
+#   - Colores:    batmanchat.color.all  o  batmanchat.color.<codigo>  (ej: batmanchat.color.a)
+#   - Formatos:   batmanchat.format.all o  batmanchat.format.<codigo> (ej: batmanchat.format.l)
+#   - HEX:        batmanchat.color.hex
+#   - Degradados: batmanchat.color.gradient
+#   - Tambien funcionan los permisos viejos chatmanager.color.* y chatmanager.format.*
+#
+#=================================================================================================#
+
+Enable: true
+
+# Si el rango del jugador no esta en Groups se usa este.
+
+Default_Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] &7%player_name% &8» &7{message}"
+
+Groups:
+  feliz:
+    Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] #FF0086&lVOTE &f%player_name% &8» &7{message}"
+  hero:
+    Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] #FF0000&lHERO &f%player_name% &8» #FF4B4B{message}"
+  elite:
+    Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] #0064FF&lELITE &f%player_name% &8» #4E92FC{message}"
+  legendario:
+    Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] #FCFF00&lLEGENDARIO &f%player_name% &8» #FCFF00{message}"
+  arcano:
+    Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] #00ACFF&lARCANO &f%player_name% &8» #7CCFFF{message}"
+  ancestral:
+    Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] #9F00FF&lANCESTRAL &f%player_name% &8» #B036FA{message}"
+  miniyt:
+    Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] #FF0000&lMINI&f&lYT &f%player_name% &8» #852828{message}"
+  valterion:
+    Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] #00DD37&lV#0DE142&lA#1AE64C&lL#27EA57&lT#34EE62&lE#40F26C&lR#4DF777&lI#5AFB81&lO#67FF8C&lN &f%player_name% &8» #37FF65{message}"
+  pascua:
+    Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] #56FFE9&lB#FFFFFF&lU#56FFE9&lN#56FFE9&lN#FFFFFF&lY &f%player_name% &8» #56FFE9{message}"
+  helper:
+    Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] #00FF3F&lSOPORTE &f%player_name% &8» #00FF3F{message}"
+  modjr:
+    Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] #2D5DFF&lMOD-JR &f%player_name% &8» #2D5DFF{message}"
+  mod:
+    Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] #2D5DFF&lMOD &f%player_name% &8» #2D5DFF{message}"
+  owner:
+    Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] #860404&lDUEÑO &f%player_name% &8» #BC0000{message}"
+  config:
+    Format: "&8[%changeoutput_equals_input:{uclans_hasclan}_matcher:true_ifmatch:{uclans_tag_color}_else:&c✘%&8] #FFAC69&lCONFIG &f%player_name% &8» #FFAC69{message}"
+
+# Permitir que los jugadores usen colores/formatos en sus mensajes (segun sus permisos de arriba).
+# false = lo que escriban sale tal cual, sin colores (como tenias en ChatManager: Formatted_Messages.enable).
+Colores_En_Mensajes: false
+
+# Hover (y clic) sobre el nombre del jugador en el chat.
+Hover_Nombre:
+  Enable: true
+  Lineas:
+    - "&7Jugador: &f%player_name%"
+    - "&7Rango: &f%luckperms_primary_group_name%"
+    - ""
+    - "&eClic para enviarle un mensaje"
+  # Tipo de clic: SUGGEST_COMMAND, RUN_COMMAND, COPY_TO_CLIPBOARD, OPEN_URL o NONE.
+  Clic:
+    Tipo: SUGGEST_COMMAND
+    Contenido: "/msg {player} "
+
+# Espera entre mensajes segun el rango, en segundos. Se usa el MENOR valor de los grupos del jugador.
+# Es ademas del chat-cooldown de proteccion/modulos. Permiso para saltarselo: batmanchat.delay.bypass
+Retraso_Chat:
+  Enable: true
+  Segundos:
+    default: 2
+    hero: 2
+    elite: 2
+    legendario: 1
+    arcano: 1
+    ancestral: 1
+    helper: 0
+    modjr: 0
+    mod: 0
+    owner: 0
+    config: 0
+  Mensaje: "{Prefix} &cEspera &e{segundos}s &cpara volver a escribir."
+
+# Sonido para los demas jugadores cada vez que alguien habla (normalmente desactivado).
+Sonido_Al_Recibir_Mensaje:
+  toggle: false
+  value: 'ENTITY_EXPERIENCE_ORB_PICKUP'
+  volume: 0.3
+  pitch: 1.5

@@ -1,0 +1,17 @@
+# BatmanChat - proteccion/modulos/anti-statue-spambot.yml
+# (Valores y listas tal como los tenias en ChatSentry. Los comentarios estan en ingles, como el original.)
+# Tambien se acepta el permiso viejo de bypass (chatsentry.*) y el general batmanchat.proteccion.bypass.
+# --------------------------------------------------------------------------------------
+# Anti Statue Spambot:
+# Prevents joining players abilities to send messages or commands until they move in order to protect against basic artificially controlled spam bots. Has an optional command whitelist.
+# Bypass permission: "batmanchat.proteccion.anti-statue-spambot.bypass"
+# --------------------------------------------------------------------------------------
+
+# IMPORTANT: The below list is only applicable if the COMMAND context is enabled under anti-statue-spambot in the main config!
+# If you have plugins that make players run commands when they join, add those commands below so they aren't blocked by the module.
+# Make sure to only include base commands; don't add any command arguments (spaces).
+# Set to "join-command-whitelist: []" to have an empty list.
+join-command-whitelist:
+- "/motd"
+- "/register"
+- "/login"
