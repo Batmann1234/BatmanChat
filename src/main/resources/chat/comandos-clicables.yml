@@ -1,0 +1,34 @@
+#=================================================================================================#
+#             BatmanChat - chat/comandos-clicables.yml (comandos clicables en el chat)
+#=================================================================================================#
+#
+#  Si alguien escribe [/spawn] en el chat, se convierte en un boton. Al hacer clic, el comando
+#  se escribe en la caja de chat del que hizo clic (no se ejecuta solo).
+#
+#  Accion: SUGGEST_COMMAND (lo escribe en el chat, es lo seguro) o RUN_COMMAND (lo ejecuta al
+#          instante; NO lo uses: cualquiera podria hacer que otros ejecuten comandos).
+#  Variables: {command} (el comando con la barra)
+#  Permiso: "" = todos pueden. Si pones un permiso, solo quien lo tenga convierte comandos.
+#  Colores: &a, &#RRGGBB, #RRGGBB.
+#
+#=================================================================================================#
+
+Enable: true
+Permiso: ""
+Accion: SUGGEST_COMMAND
+Max_Por_Mensaje: 3
+
+Formato: "&8[&#2AFF39{command}&8]"
+Hover:
+  - "&aClic para usar el comando!"
+  - "&7{command}"
+
+# Comandos que nunca se convierten en boton (sin la barra).
+Comandos_Bloqueados:
+  - login
+  - l
+  - register
+  - reg
+  - changepassword
+  - op
+  - deop
